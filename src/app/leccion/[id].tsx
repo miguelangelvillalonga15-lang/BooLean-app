@@ -214,6 +214,8 @@ function terminarLeccion(
   router.replace({
     pathname: '/resultado',
     params: {
+      leccion: resultado.leccionId,
+      pistas: String(resultado.pistas),
       xp: String(resultado.xp),
       aciertos: String(resultado.aciertos),
       total: String(resultado.total),

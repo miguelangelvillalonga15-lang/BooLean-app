@@ -1,21 +1,20 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 
-import { BooDibujo } from '@/components/Boo';
-import { AnilloProgreso } from '@/components/ui/AnilloProgreso';
-import { BarraProgreso } from '@/components/ui/BarraProgreso';
+import { Boo } from '@/components/Boo';
+import { GraficoLecciones } from '@/components/graficos/GraficoLecciones';
+import { GraficoSemana } from '@/components/graficos/GraficoSemana';
 import { Boton } from '@/components/ui/Boton';
 import { Pantalla } from '@/components/ui/Pantalla';
 import { IconoCirculo, Tarjeta } from '@/components/ui/Tarjeta';
 import { Texto } from '@/components/ui/Texto';
 import { curso, frasesBoo, glosario, obtenerLeccion } from '@/content';
-import { META_XP, siguienteLeccion, xpDeHoy } from '@/engine/progreso';
+import { estadoLeccion, META_XP, siguienteLeccion, ultimosDias, xpDeHoy } from '@/engine/progreso';
 import { claveDia, rachaVigente } from '@/engine/streak';
 import { useProgreso } from '@/store/progress';
-import { colores, espacio, radio } from '@/theme';
+import { colores, ESPACIO_PESTANAS, espacio } from '@/theme';
 import type { BooAnimo } from '@/types/content';
 
 export default function Inicio() {
@@ -32,7 +31,7 @@ export default function Inicio() {
   const unidad =
     curso.unidades.find((u) => siguiente && u.lecciones.includes(siguiente)) ??
     curso.unidades[curso.unidades.length - 1];
-  const hechas = unidad.lecciones.filter((id) => progreso.lecciones[id]?.completada).length;
+  const numeroUnidad = curso.unidades.indexOf(unidad) + 1;
   const palabras = glosario.filter((t) => progreso.lecciones[t.leccion]?.completada).length;
 
   // Boo reacciona a la situación (racha, meta); la semilla mantiene fija la frase elegida.
@@ -47,120 +46,165 @@ export default function Inicio() {
   const abrir = (id: string) => router.push({ pathname: '/leccion/[id]', params: { id } });
 
   return (
-    <Pantalla bordes={['top']}>
-      <View style={estilos.fila}>
-        <Tarjeta style={estilos.contador} accessibilityLabel={`Racha de ${racha.actual} días`}>
-          <Ionicons name="flame" size={24} color={racha.actual > 0 ? colores.racha : colores.bloqueado} />
-          <Texto variante="numero">{racha.actual}</Texto>
-        </Tarjeta>
-        <Tarjeta style={estilos.contador} accessibilityLabel={`${progreso.xpTotal} XP`}>
-          <Ionicons name="star" size={22} color={colores.xp} />
-          <Texto variante="numero">{progreso.xpTotal}</Texto>
-        </Tarjeta>
+    <Pantalla bordes={['top']} grilla espacioInferior={ESPACIO_PESTANAS}>
+      <View style={estilos.encabezado}>
+        <Texto variante="etiqueta" color={colores.primario}>
+          booLean.app
+        </Texto>
+        <Texto variante="titulo">{nombre ? `Hola, ${nombre}` : 'Hola'}</Texto>
       </View>
 
-      <LinearGradient
-        colors={[colores.superficie, colores.violetaOscuro, colores.violeta]}
-        locations={[0, 0.55, 1]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0.4 }}
-        style={estilos.banner}>
-        <View style={estilos.bannerTexto}>
-          <Texto variante="etiqueta" color={colores.textoSuave}>
-            {nombre ? `Hola, ${nombre}` : 'Hola'}
-          </Texto>
-          <Texto variante="subtitulo">{boo.mensaje}</Texto>
-        </View>
-        <BooDibujo animo={boo.animo} tamano={96} />
-      </LinearGradient>
+      <Boo animo={boo.animo} mensaje={boo.mensaje} tamano={64} />
 
+      {/* Tu día, en forma de planilla */}
+      <Tarjeta style={estilos.sinRelleno}>
+        <View style={estilos.planillaTitulo}>
+          <Ionicons name="document-text-outline" size={16} color={colores.textoSuave} />
+          <Texto variante="codigo" color={colores.textoSuave}>
+            hoy.csv
+          </Texto>
+        </View>
+        <Fila clave="racha" valor={`${racha.actual} ${racha.actual === 1 ? 'día' : 'días'}`} icono="flame" color={colores.racha} />
+        <Fila clave="xp_total" valor={String(progreso.xpTotal)} icono="star" color={colores.xp} />
+        <Fila clave="xp_hoy" valor={`${xpHoy} / ${metaXp}`} icono="flag" color={colores.violeta} />
+        <Fila
+          clave="meta_cumplida"
+          valor={metaCumplida ? 'VERDADERO' : 'FALSO'}
+          icono={metaCumplida ? 'checkmark-circle' : 'ellipse-outline'}
+          color={metaCumplida ? colores.primario : colores.rosa}
+          resaltar
+          ultima
+        />
+      </Tarjeta>
+
+      {/* Unidad actual con el puntaje de cada lección */}
       <Tarjeta style={estilos.unidad}>
-        <Texto variante="etiqueta" color={colores.primario}>
-          Unidad {curso.unidades.indexOf(unidad) + 1} ·{' '}
+        <Texto variante="etiqueta" color={colores.violeta}>
+          Unidad {String(numeroUnidad).padStart(2, '0')} ·{' '}
           {curso.niveles.find((n) => n.id === unidad.nivel)?.titulo}
         </Texto>
         <Texto variante="titulo">{unidad.titulo}</Texto>
-        <Texto variante="chico" color={colores.textoSuave}>
-          {unidad.descripcion}
-        </Texto>
-        <View style={estilos.anillo}>
-          <AnilloProgreso valor={hechas / unidad.lecciones.length} />
+        <View style={estilos.grafico}>
+          <GraficoLecciones
+            barras={unidad.lecciones.map((id) => ({
+              id,
+              estado: estadoLeccion(curso, progreso, id),
+              puntaje: progreso.lecciones[id]?.mejorPuntaje ?? 0,
+            }))}
+          />
         </View>
         {siguiente ? (
           <>
-            <Texto variante="chico" color={colores.textoSuave} style={estilos.centrado}>
-              Próxima: {obtenerLeccion(siguiente)?.titulo}
+            <Texto variante="chico" color={colores.textoSuave}>
+              Próxima: <Texto variante="chico">{obtenerLeccion(siguiente)?.titulo}</Texto>
             </Texto>
-            <Boton titulo={hechas === 0 ? 'Empezar' : 'Seguir aprendiendo'} onPress={() => abrir(siguiente)} />
+            <Boton
+              titulo={progreso.lecciones[unidad.lecciones[0]]?.completada ? 'Seguir aprendiendo' : 'Empezar'}
+              onPress={() => abrir(siguiente)}
+            />
           </>
         ) : (
-          <Texto variante="chico" color={colores.primario} style={estilos.centrado}>
+          <Texto variante="chico" color={colores.primario}>
             ¡Terminaste la unidad! Pronto llegan más lecciones.
           </Texto>
         )}
       </Tarjeta>
 
-      <View style={estilos.fila}>
-        <Tarjeta style={estilos.mitad}>
-          <IconoCirculo nombre="flag" color={colores.racha} />
-          <Texto variante="subtitulo" style={estilos.tituloTarjeta}>
-            Meta de hoy
+      <Tarjeta style={estilos.semana}>
+        <View style={estilos.filaEntre}>
+          <Texto variante="subtitulo">Tu semana</Texto>
+          <Texto variante="codigo" color={colores.racha}>
+            - - meta {metaXp} XP
           </Texto>
-          <Texto variante="chico" color={metaCumplida ? colores.primario : colores.textoSuave}>
-            {Math.min(xpHoy, metaXp)} / {metaXp} XP {metaCumplida ? '✓' : ''}
-          </Texto>
-          <BarraProgreso valor={xpHoy / metaXp} color={colores.racha} alto={8} />
-        </Tarjeta>
+        </View>
+        <GraficoSemana dias={ultimosDias(progreso, hoy)} hoy={hoy} meta={metaXp} />
+      </Tarjeta>
+
+      <View style={estilos.filaTarjetas}>
         <Tarjeta style={estilos.mitad} onPress={() => router.push('/glosario')} accessibilityLabel="Abrir glosario">
-          <IconoCirculo nombre="book" color={colores.violeta} />
-          <Texto variante="subtitulo" style={estilos.tituloTarjeta}>
+          <IconoCirculo nombre="book" color={colores.violeta} tamano={44} />
+          <Texto variante="subtitulo" style={estilos.tituloMitad}>
             Glosario
           </Texto>
-          <Texto variante="chico" color={colores.textoSuave}>
-            {palabras} de {glosario.length} palabras
+          <Texto variante="codigo" color={colores.textoSuave}>
+            {palabras}/{glosario.length} palabras
+          </Texto>
+        </Tarjeta>
+        <Tarjeta style={[estilos.mitad, estilos.punteada]}>
+          <IconoCirculo nombre="grid" color={colores.azul} tamano={44} />
+          <Texto variante="subtitulo" style={estilos.tituloMitad}>
+            Excel
+          </Texto>
+          <Texto variante="codigo" color={colores.textoSuave}>
+            próximamente
           </Texto>
         </Tarjeta>
       </View>
-
-      <Tarjeta style={estilos.proximo}>
-        <IconoCirculo nombre="grid" color={colores.azul} />
-        <View style={{ flex: 1 }}>
-          <Texto variante="subtitulo">Excel desde cero</Texto>
-          <Texto variante="chico" color={colores.textoSuave}>
-            Próximamente: Unidad 2
-          </Texto>
-        </View>
-        <Ionicons name="lock-closed" size={20} color={colores.textoSuave} />
-      </Tarjeta>
     </Pantalla>
   );
 }
 
+type FilaProps = {
+  clave: string;
+  valor: string;
+  icono: keyof typeof Ionicons.glyphMap;
+  color: string;
+  resaltar?: boolean;
+  ultima?: boolean;
+};
+
+/** Una fila de la planilla "hoy.csv": nombre de la variable y su valor. */
+function Fila({ clave, valor, icono, color, resaltar, ultima }: FilaProps) {
+  return (
+    <View style={[estilos.fila, !ultima && estilos.filaBorde]}>
+      <View style={estilos.celdaClave}>
+        <Ionicons name={icono} size={16} color={color} />
+        <Texto variante="codigo" color={colores.textoSuave}>
+          {clave}
+        </Texto>
+      </View>
+      <View style={estilos.celdaValor}>
+        <Texto variante="numero" style={estilos.valor} color={resaltar ? color : colores.texto}>
+          {valor}
+        </Texto>
+      </View>
+    </View>
+  );
+}
+
 const estilos = StyleSheet.create({
-  fila: { flexDirection: 'row', gap: espacio.m },
-  contador: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: espacio.s + 4,
-    borderRadius: radio.m,
-  },
-  banner: {
+  encabezado: { gap: espacio.xs, marginTop: espacio.s },
+  sinRelleno: { padding: 0, gap: 0, overflow: 'hidden' },
+  planillaTitulo: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: espacio.s,
-    borderRadius: radio.l,
-    padding: espacio.m,
-    paddingRight: espacio.s,
-    borderWidth: 1,
+    paddingHorizontal: espacio.m,
+    paddingVertical: espacio.s + 2,
+    backgroundColor: colores.superficieAlta,
+    borderBottomWidth: 1,
     borderColor: colores.borde,
   },
-  bannerTexto: { flex: 1, gap: espacio.xs },
+  fila: { flexDirection: 'row', alignItems: 'stretch' },
+  filaBorde: { borderBottomWidth: 1, borderColor: colores.borde },
+  celdaClave: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: espacio.s,
+    paddingHorizontal: espacio.m,
+    paddingVertical: espacio.s + 4,
+    borderRightWidth: 1,
+    borderColor: colores.borde,
+  },
+  celdaValor: { flex: 1, justifyContent: 'center', paddingHorizontal: espacio.m },
+  valor: { fontSize: 17, textAlign: 'right' },
   unidad: { padding: espacio.l, gap: espacio.s },
-  anillo: { alignItems: 'center', paddingVertical: espacio.m },
-  centrado: { textAlign: 'center' },
-  mitad: { flex: 1, padding: espacio.m + 4, gap: espacio.s },
-  tituloTarjeta: { marginTop: espacio.l },
-  proximo: { flexDirection: 'row', alignItems: 'center', gap: espacio.m, padding: espacio.m + 4 },
+  grafico: { paddingVertical: espacio.m },
+  semana: { padding: espacio.l, gap: espacio.m },
+  filaEntre: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  filaTarjetas: { flexDirection: 'row', gap: espacio.m },
+  mitad: { flex: 1, padding: espacio.m + 4, gap: espacio.xs },
+  tituloMitad: { marginTop: espacio.m },
+  punteada: { borderStyle: 'dashed', backgroundColor: 'transparent' },
 });

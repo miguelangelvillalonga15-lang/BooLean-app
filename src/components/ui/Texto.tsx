@@ -3,7 +3,7 @@ import { StyleSheet, Text, type TextProps } from 'react-native';
 import { colores, fuentes } from '@/theme';
 
 type Props = TextProps & {
-  variante?: 'titulo' | 'subtitulo' | 'cuerpo' | 'chico' | 'etiqueta' | 'numero';
+  variante?: 'titulo' | 'subtitulo' | 'cuerpo' | 'chico' | 'etiqueta' | 'numero' | 'codigo';
   color?: string;
 };
 
@@ -30,11 +30,12 @@ export function TextoRico({ children, ...props }: Omit<Props, 'children'> & { ch
 }
 
 const estilos = StyleSheet.create({
-  titulo: { fontFamily: fuentes.seminegrita, fontSize: 28, lineHeight: 34 },
+  titulo: { fontFamily: fuentes.negrita, fontSize: 30, lineHeight: 35, letterSpacing: -0.5 },
   subtitulo: { fontFamily: fuentes.seminegrita, fontSize: 21, lineHeight: 27 },
   cuerpo: { fontFamily: fuentes.regular, fontSize: 17, lineHeight: 25 },
   chico: { fontFamily: fuentes.regular, fontSize: 15, lineHeight: 21 },
-  etiqueta: { fontFamily: fuentes.negrita, fontSize: 13, lineHeight: 18, letterSpacing: 0.6, textTransform: 'uppercase' },
-  numero: { fontFamily: fuentes.negrita, fontSize: 20, lineHeight: 24 },
+  etiqueta: { fontFamily: fuentes.monoNegrita, fontSize: 12, lineHeight: 16, letterSpacing: 0.8, textTransform: 'uppercase' },
+  numero: { fontFamily: fuentes.monoNegrita, fontSize: 20, lineHeight: 24 },
+  codigo: { fontFamily: fuentes.mono, fontSize: 14, lineHeight: 20 },
   negrita: { fontFamily: fuentes.negrita },
 });

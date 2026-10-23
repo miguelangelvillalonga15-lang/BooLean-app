@@ -20,21 +20,22 @@ export type ProgresoLeccion = {
 };
 
 export type Progreso = {
-  version: 1;
+  version: 2;
   perfil: Perfil | null;
   xpTotal: number;
   racha: Racha;
-  xpDelDia: { fecha: string; xp: number };
+  /** XP ganado por día ("AAAA-MM-DD" → XP), para la meta diaria y el gráfico de la semana. */
+  historial: Record<string, number>;
   lecciones: Record<string, ProgresoLeccion>;
   paraRepasar: string[];
 };
 
 export const PROGRESO_INICIAL: Progreso = {
-  version: 1,
+  version: 2,
   perfil: null,
   xpTotal: 0,
   racha: RACHA_INICIAL,
-  xpDelDia: { fecha: '', xp: 0 },
+  historial: {},
   lecciones: {},
   paraRepasar: [],
 };
@@ -43,7 +44,16 @@ export const PROGRESO_INICIAL: Progreso = {
 export const META_XP: Record<MetaMinutos, number> = { 5: 15, 10: 30, 15: 45 };
 
 export function xpDeHoy(progreso: Progreso, hoy: string): number {
-  return progreso.xpDelDia.fecha === hoy ? progreso.xpDelDia.xp : 0;
+  return progreso.historial[hoy] ?? 0;
+}
+
+/** Los últimos `n` días terminando en `hoy`, del más viejo al más nuevo, con su XP. */
+export function ultimosDias(progreso: Progreso, hoy: string, n = 7): { fecha: string; xp: number }[] {
+  const base = Date.parse(`${hoy}T00:00:00Z`);
+  return Array.from({ length: n }, (_, i) => {
+    const fecha = new Date(base - (n - 1 - i) * 86_400_000).toISOString().slice(0, 10);
+    return { fecha, xp: progreso.historial[fecha] ?? 0 };
+  });
 }
 
 export function aplicarResultado(
@@ -62,7 +72,7 @@ export function aplicarResultado(
     ...progreso,
     xpTotal: progreso.xpTotal + resultado.xp,
     racha: registrarDia(progreso.racha, hoy),
-    xpDelDia: { fecha: hoy, xp: xpDeHoy(progreso, hoy) + resultado.xp },
+    historial: { ...progreso.historial, [hoy]: xpDeHoy(progreso, hoy) + resultado.xp },
     lecciones: {
       ...progreso.lecciones,
       [resultado.leccionId]: {

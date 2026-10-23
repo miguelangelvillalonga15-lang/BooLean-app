@@ -24,8 +24,21 @@ export const useProgreso = create<Progreso & Acciones>()(
     }),
     {
       name: 'boolean-progreso',
-      version: 1,
+      version: 2,
       storage: createJSONStorage(() => AsyncStorage),
+      // v1 guardaba solo el XP de hoy; v2 guarda el historial por día.
+      migrate: (guardado, version) => {
+        const estado = guardado as Partial<Progreso> & { xpDelDia?: { fecha: string; xp: number } };
+        if (version < 2) {
+          const { xpDelDia, ...resto } = estado;
+          return {
+            ...resto,
+            version: 2,
+            historial: xpDelDia?.fecha ? { [xpDelDia.fecha]: xpDelDia.xp } : {},
+          } as Progreso & Acciones;
+        }
+        return estado as Progreso & Acciones;
+      },
     },
   ),
 );

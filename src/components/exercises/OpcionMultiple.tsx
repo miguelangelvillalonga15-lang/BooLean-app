@@ -16,9 +16,10 @@ type Props = {
 export function OpcionMultiple({ ejercicio, respuesta, onCambiar, bloqueado }: Props) {
   return (
     <View style={{ gap: espacio.s }}>
-      {ejercicio.opciones.map((op) => (
+      {ejercicio.opciones.map((op, i) => (
         <Opcion
           key={op.id}
+          letra={String.fromCharCode(65 + i)}
           texto={op.texto}
           seleccionada={respuesta === op.id}
           deshabilitada={bloqueado && respuesta !== op.id}

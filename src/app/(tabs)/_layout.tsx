@@ -24,15 +24,31 @@ export default function LayoutPestanas() {
       screenOptions={{
         headerShown: false,
         sceneStyle: { backgroundColor: colores.fondo },
+        // Barra flotante en forma de píldora, separada de los bordes.
         tabBarStyle: {
-          backgroundColor: colores.superficie,
+          position: 'absolute',
+          left: 16,
+          right: 16,
+          bottom: 16,
+          height: 72,
+          paddingTop: 8,
+          paddingBottom: 8,
+          borderRadius: 32,
+          borderTopWidth: 1,
+          borderWidth: 1,
+          borderColor: colores.borde,
           borderTopColor: colores.borde,
-          height: 68,
-          paddingTop: 6,
+          backgroundColor: colores.superficieAlta,
+          elevation: 12,
+          shadowColor: '#000',
+          shadowOpacity: 0.4,
+          shadowRadius: 16,
+          shadowOffset: { width: 0, height: 6 },
         },
-        tabBarActiveTintColor: colores.texto,
+        tabBarActiveTintColor: colores.primario,
         tabBarInactiveTintColor: colores.textoSuave,
-        tabBarLabelStyle: { fontFamily: fuentes.media, fontSize: 13 },
+        tabBarLabelStyle: { fontFamily: fuentes.monoNegrita, fontSize: 11, lineHeight: 14, letterSpacing: 0.4 },
+        tabBarItemStyle: { justifyContent: 'center', gap: 2 },
       }}>
       <Tabs.Screen name="index" options={{ title: 'Inicio', tabBarIcon: icono('home', 'home-outline') }} />
       <Tabs.Screen

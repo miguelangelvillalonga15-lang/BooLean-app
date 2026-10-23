@@ -2,7 +2,13 @@ import { describe, expect, it } from '@jest/globals';
 import { obtenerLeccion } from '@/content';
 import { corregir } from '@/engine/grading';
 import { normalizar } from '@/engine/normalize';
-import { aplicarResultado, estadoLeccion, PROGRESO_INICIAL, siguienteLeccion } from '@/engine/progreso';
+import {
+  aplicarResultado,
+  estadoLeccion,
+  PROGRESO_INICIAL,
+  siguienteLeccion,
+  ultimosDias,
+} from '@/engine/progreso';
 import { calcularResultado, iniciarSesion, reducirSesion, type EstadoSesion } from '@/engine/session';
 import { diasEntre, rachaVigente, registrarDia, RACHA_INICIAL } from '@/engine/streak';
 import { curso } from '@/content';
@@ -168,7 +174,7 @@ describe('progreso', () => {
     expect(estadoLeccion(curso, p, 'u1-l2')).toBe('disponible');
     expect(siguienteLeccion(curso, p)).toBe('u1-l2');
     expect(p.xpTotal).toBe(r.xp);
-    expect(p.xpDelDia).toEqual({ fecha: '2026-10-23', xp: r.xp });
+    expect(p.historial).toEqual({ '2026-10-23': r.xp });
     expect(p.racha.actual).toBe(1);
     expect(p.paraRepasar).toEqual(['u1-l1/p2']);
 
@@ -178,5 +184,16 @@ describe('progreso', () => {
     expect(p2.paraRepasar).toEqual([]);
     expect(p2.lecciones['u1-l1'].intentos).toBe(2);
     expect(p2.racha.actual).toBe(1);
+  });
+});
+
+describe('historial', () => {
+  it('devuelve los últimos 7 días con su XP, cruzando de mes', () => {
+    const p = { ...PROGRESO_INICIAL, historial: { '2026-10-01': 20, '2026-09-28': 15 } };
+    const dias = ultimosDias(p, '2026-10-01');
+    expect(dias).toHaveLength(7);
+    expect(dias[0]).toEqual({ fecha: '2026-09-25', xp: 0 });
+    expect(dias[3]).toEqual({ fecha: '2026-09-28', xp: 15 });
+    expect(dias[6]).toEqual({ fecha: '2026-10-01', xp: 20 });
   });
 });

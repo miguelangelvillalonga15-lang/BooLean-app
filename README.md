@@ -7,7 +7,7 @@ Lecciones de hasta 10 minutos: **concepto → práctica → repaso de lo que te 
 ## Qué tiene esta versión (MVP)
 
 - Bienvenida con Boo: tu nombre y tu meta diaria (5, 10 o 15 minutos).
-- Inicio con racha diaria 🔥, XP ⭐, avance de la unidad y meta del día.
+- Inicio con tu día en forma de planilla (racha 🔥, XP ⭐, meta), puntaje por lección y gráfico de la semana.
 - Pestaña «Aprender» con el camino de lecciones, que se desbloquean en orden.
 - Lecciones con ejercicios de opción múltiple, completar y ordenar, con corrección automática.
 - Pistas de Boo (cuestan 2 XP) y repaso al final de los ejercicios que fallaste.
@@ -17,6 +17,16 @@ Lecciones de hasta 10 minutos: **concepto → práctica → repaso de lo que te 
 - Unidad 1 «¿Qué es un dato?» con 4 lecciones.
 
 Todo funciona sin internet: el contenido está en archivos JSON y el progreso se guarda en el celular.
+
+## Identidad visual
+
+BooLean mezcla **datos** y **gata**:
+
+- **Paleta sacada de Boo:** verde lima de sus ojos, rosa de su nariz y fondo tinta (`src/theme/index.ts`).
+- **Estética de planilla:** cuadrícula de fondo, letra monoespaciada (JetBrains Mono) para números y etiquetas, y tu día como una tabla `hoy.csv`.
+- **Tu avance como gráficos:** barras con el puntaje de cada lección y el XP de la semana con la línea de tu meta.
+- **El booleano en todos lados:** al responder ves `respuesta = VERDADERO` o `FALSO`, y el resultado es un ticket con `perfecta = VERDADERO/FALSO`.
+- **Huellitas 🐾** de Boo uniendo las lecciones del camino.
 
 ## Boo
 

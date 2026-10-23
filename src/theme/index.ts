@@ -1,26 +1,33 @@
-// Colores, tipografía y medidas de BooLean. Cambiá acá para cambiar el look de toda la app.
+// Identidad visual de BooLean. La paleta sale de Boo: el verde lima de sus ojos,
+// el rosa de su nariz y su pelaje blanco y negro sobre un fondo tinta.
 
 export const colores = {
-  fondo: '#0A1020',
-  superficie: '#131B2E',
-  superficieAlta: '#1B2540',
-  borde: '#26314D',
-  texto: '#F2F5FB',
-  textoSuave: '#8F9BB8',
-  /** Verde neón: botones principales y aciertos. */
-  primario: '#13E36C',
-  textoSobrePrimario: '#04130A',
-  violeta: '#7B5CFF',
-  violetaOscuro: '#3B23B8',
-  violetaSuave: 'rgba(123, 92, 255, 0.16)',
-  acierto: '#13E36C',
-  aciertoSuave: 'rgba(19, 227, 108, 0.12)',
-  error: '#FF5D73',
-  errorSuave: 'rgba(255, 93, 115, 0.12)',
-  racha: '#FF9F2E',
-  xp: '#FFD23F',
-  azul: '#5AA9FF',
-  bloqueado: '#3A4560',
+  fondo: '#0F0D17',
+  superficie: '#1A1724',
+  superficieAlta: '#25202F',
+  borde: '#342D43',
+  /** Líneas de la cuadrícula de fondo (como una planilla). */
+  grilla: 'rgba(245, 239, 230, 0.05)',
+  texto: '#F5EFE6',
+  textoSuave: '#A79FB5',
+  /** Lima de los ojos de Boo: botones principales y aciertos. */
+  primario: '#C8DC4B',
+  textoSobrePrimario: '#15130B',
+  primarioSuave: 'rgba(200, 220, 75, 0.14)',
+  /** Lavanda: lo que está en curso o seleccionado. */
+  violeta: '#A88BFF',
+  violetaOscuro: '#3D2E78',
+  violetaSuave: 'rgba(168, 139, 255, 0.16)',
+  /** Rosa de la nariz de Boo. */
+  rosa: '#FF8FA3',
+  acierto: '#C8DC4B',
+  aciertoSuave: 'rgba(200, 220, 75, 0.12)',
+  error: '#FF6B81',
+  errorSuave: 'rgba(255, 107, 129, 0.12)',
+  racha: '#FF9F43',
+  xp: '#FFD166',
+  azul: '#6CC5FF',
+  bloqueado: '#4A4259',
   blanco: '#FFFFFF',
 } as const;
 
@@ -30,6 +37,9 @@ export const fuentes = {
   seminegrita: 'Outfit_600SemiBold',
   negrita: 'Outfit_700Bold',
   extranegrita: 'Outfit_800ExtraBold',
+  /** Monoespaciada para números, etiquetas y "código", como en una planilla o en SQL. */
+  mono: 'JetBrainsMono_500Medium',
+  monoNegrita: 'JetBrainsMono_700Bold',
 } as const;
 
 export const espacio = {
@@ -43,8 +53,11 @@ export const espacio = {
 export const radio = {
   s: 10,
   m: 16,
-  l: 24,
+  l: 26,
   redondo: 999,
 } as const;
 
 export const ANCHO_MAXIMO = 560;
+
+/** Lugar que ocupa la barra de pestañas flotante al pie de la pantalla. */
+export const ESPACIO_PESTANAS = 96;

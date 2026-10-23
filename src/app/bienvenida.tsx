@@ -33,15 +33,20 @@ export default function Bienvenida() {
 
   if (paso === 0) {
     return (
-      <Pantalla pie={<Boton titulo="¡Arranquemos!" onPress={() => setPaso(1)} />}>
+      <Pantalla grilla pie={<Boton titulo="¡Arranquemos!" onPress={() => setPaso(1)} />}>
         <View style={estilos.centro}>
-          <Boo animo="presentandose" tamano={150} />
-          <Texto variante="titulo" style={estilos.textoCentrado}>
-            ¡Hola! Soy Boo
-          </Texto>
+          <Boo animo="presentandose" tamano={170} />
+          <View style={estilos.marca}>
+            <Texto style={estilos.logo}>
+              Boo<Texto style={[estilos.logo, { color: colores.primario }]}>Lean</Texto>
+            </Texto>
+            <Texto variante="codigo" color={colores.textoSuave}>
+              aprendés_data = VERDADERO
+            </Texto>
+          </View>
           <Texto style={estilos.textoCentrado} color={colores.textoSuave}>
-            Soy una gata analista y te voy a enseñar data desde cero: Excel, SQL, estadística y
-            análisis. Con unos minutitos por día alcanza.
+            Soy Boo, una gata analista. Te voy a enseñar data desde cero: Excel, SQL, estadística
+            y análisis, con unos minutitos por día.
           </Texto>
         </View>
       </Pantalla>
@@ -51,6 +56,7 @@ export default function Bienvenida() {
   if (paso === 1) {
     return (
       <Pantalla
+        grilla
         pie={
           <Boton
             titulo="Continuar"
@@ -58,6 +64,9 @@ export default function Bienvenida() {
             onPress={() => setPaso(2)}
           />
         }>
+        <Texto variante="etiqueta" color={colores.violeta}>
+          Paso 1 de 2
+        </Texto>
         <Boo animo="contenta" tamano={72} mensaje="¿Cómo te llamo?" />
         <TextInput
           value={nombre}
@@ -76,16 +85,20 @@ export default function Bienvenida() {
   }
 
   return (
-    <Pantalla pie={<Boton titulo="Empezar a aprender" onPress={terminar} />}>
+    <Pantalla grilla pie={<Boton titulo="Empezar a aprender" onPress={terminar} />}>
+      <Texto variante="etiqueta" color={colores.violeta}>
+        Paso 2 de 2
+      </Texto>
       <Boo
         animo="feliz"
         tamano={72}
         mensaje={`¡Un gusto, ${nombre.trim()}! ¿Cuánto tiempo por día querés practicar?`}
       />
       <View style={{ gap: espacio.s }}>
-        {METAS.map((m) => (
+        {METAS.map((m, i) => (
           <Opcion
             key={m.minutos}
+            letra={String.fromCharCode(65 + i)}
             texto={`${m.nombre} · ${m.minutos} min por día (${META_XP[m.minutos]} XP)`}
             seleccionada={meta === m.minutos}
             onPress={() => {
@@ -103,7 +116,9 @@ export default function Bienvenida() {
 }
 
 const estilos = StyleSheet.create({
-  centro: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: espacio.m },
+  centro: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: espacio.l },
+  marca: { alignItems: 'center', gap: espacio.xs },
+  logo: { fontFamily: fuentes.extranegrita, fontSize: 44, lineHeight: 50, letterSpacing: -1, color: colores.texto },
   textoCentrado: { textAlign: 'center' },
   input: {
     borderWidth: 1,

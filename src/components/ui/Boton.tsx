@@ -53,12 +53,12 @@ export function Boton({ titulo, onPress, variante = 'primario', deshabilitado, s
 
 const estilos = StyleSheet.create({
   base: {
-    minHeight: 54,
-    borderRadius: radio.m,
+    minHeight: 56,
+    borderRadius: radio.redondo,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: espacio.l,
     alignSelf: 'stretch',
   },
-  texto: { fontFamily: fuentes.seminegrita, fontSize: 18, lineHeight: 22 },
+  texto: { fontFamily: fuentes.negrita, fontSize: 18, lineHeight: 22 },
 });
