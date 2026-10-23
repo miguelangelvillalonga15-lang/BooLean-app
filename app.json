@@ -9,7 +9,7 @@
     "userInterfaceStyle": "dark",
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#7B5CFF",
+        "backgroundColor": "#C8DC4B",
         "foregroundImage": "./assets/images/android-icon-foreground.png"
       },
       "predictiveBackGestureEnabled": false
@@ -23,7 +23,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#0A1020",
+          "backgroundColor": "#0F0D17",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 160
         }
@@ -33,6 +33,6 @@
       "typedRoutes": true,
       "reactCompiler": true
     },
-    "backgroundColor": "#0A1020"
+    "backgroundColor": "#0F0D17"
   }
 }
