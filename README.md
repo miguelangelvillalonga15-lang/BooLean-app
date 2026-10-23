@@ -28,9 +28,22 @@ BooLean mezcla **datos** y **gata**:
 - **El booleano en todos lados:** al responder ves `respuesta = VERDADERO` o `FALSO`, y el resultado es un ticket con `perfecta = VERDADERO/FALSO`.
 - **Huellitas 🐾** de Boo uniendo las lecciones del camino.
 
+## Animaciones y sonidos
+
+Para que aprender se sienta como un juego:
+
+- **Boo viva:** respira, parpadea, mueve una oreja, te mira cuando elegís una opción y, si todavía no practicaste hoy, duerme (con *zzz*) hasta que tocás «Empezar». Si la tocás en el inicio, ronronea con ojos de corazón.
+- **Al responder:** lluvia de `VERDADERO` / `TRUE` / `1` si acertás; temblor y Boo sorprendida si no. Con 3 aciertos seguidos aparece el combo y Boo se pone anteojos de sol 😎; con 5, la barra de progreso se prende fuego.
+- **Al terminar:** el ticket se imprime renglón por renglón, el XP cuenta hacia arriba, la racha gira como un cuentakilómetros y, si fue perfecta, cae un sello. Mientras, Boo mira un ovillo que rueda.
+- **En el camino:** cuando desbloqueás una lección, Boo camina hasta ella dejando huellitas 🐾.
+- **En el inicio:** los gráficos crecen, la llama de la racha se agranda con los días y, al cumplir la meta, la celda `meta_cumplida` se tipea sola de FALSO a VERDADERO.
+- **Sonidos** (con botón para silenciar en el inicio): miau al acertar, ronroneo al terminar, clic de teclado al escribir y más. Son provisorios, sintetizados con `scripts/generar-sonidos.py`. Se pueden reemplazar por grabaciones reales en `assets/sonidos/` (¡un miau de la verdadera Boo!).
+
+Las animaciones usan [Reanimated](https://docs.swmansion.com/react-native-reanimated/) y el sonido `expo-audio`; las dos funcionan en Expo Go.
+
 ## Boo
 
-Boo está dibujada en SVG (`src/components/Boo.tsx`) a partir de la gata real: pelo largo blanco y negro, capucha negra con una mancha alrededor del ojo, ojos verdes y nariz rosa. Tiene siete ánimos: `feliz`, `contenta`, `presentandose`, `pensando`, `triste`, `decepcionada` y `sorprendida`. El ícono de la app también es Boo.
+Boo está dibujada en SVG (`src/components/Boo.tsx`) a partir de la gata real: pelo largo blanco y negro, capucha negra con una mancha alrededor del ojo, ojos verdes y nariz rosa. Tiene nueve ánimos: `feliz`, `contenta`, `presentandose`, `pensando`, `triste`, `decepcionada`, `sorprendida`, `enamorada` y `dormida`, y puede usar anteojos de sol. El ícono de la app también es Boo.
 
 ## Cómo probarla en tu celular
 

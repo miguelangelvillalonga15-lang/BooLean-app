@@ -1,6 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { StyleSheet, View } from 'react-native';
 
+import { BarraCrece } from '@/components/animaciones/BarraCrece';
 import { Texto } from '@/components/ui/Texto';
 import type { EstadoLeccion } from '@/engine/progreso';
 import { colores, espacio, radio } from '@/theme';
@@ -13,31 +14,30 @@ export function GraficoLecciones({ barras }: { barras: Barra[] }) {
   return (
     <View>
       <View style={[estilos.zona, { height: ALTO }]}>
-        {barras.map((b) => (
+        {barras.map((b, i) => (
           <View key={b.id} style={estilos.columna}>
             {b.estado === 'completada' ? (
               <>
                 <Texto variante="codigo" color={colores.primario} style={estilos.valor}>
                   {Math.round(b.puntaje * 100)}%
                 </Texto>
-                <View
-                  style={[estilos.barra, { height: Math.max(12, b.puntaje * (ALTO - 22)), backgroundColor: colores.primario }]}
+                <BarraCrece
+                  alto={Math.max(12, b.puntaje * (ALTO - 22))}
+                  retraso={i * 140}
+                  style={[estilos.barra, { backgroundColor: colores.primario }]}
                 />
               </>
             ) : (
-              <View
-                style={[
-                  estilos.barra,
-                  estilos.pendiente,
-                  { height: ALTO - 22 },
-                  b.estado === 'disponible' && estilos.siguiente,
-                ]}>
+              <BarraCrece
+                alto={ALTO - 22}
+                retraso={i * 140}
+                style={[estilos.barra, estilos.pendiente, b.estado === 'disponible' && estilos.siguiente]}>
                 <Ionicons
                   name={b.estado === 'disponible' ? 'play' : 'lock-closed'}
                   size={16}
                   color={b.estado === 'disponible' ? colores.violeta : colores.bloqueado}
                 />
-              </View>
+              </BarraCrece>
             )}
           </View>
         ))}
@@ -58,7 +58,7 @@ const estilos = StyleSheet.create({
   zona: { flexDirection: 'row', alignItems: 'flex-end', gap: espacio.m },
   columna: { flex: 1, alignItems: 'center', justifyContent: 'flex-end', gap: 4 },
   valor: { fontSize: 12, lineHeight: 16 },
-  barra: { width: '100%', borderTopLeftRadius: radio.s, borderTopRightRadius: radio.s },
+  barra: { width: '100%', borderTopLeftRadius: radio.s, borderTopRightRadius: radio.s, overflow: 'hidden' },
   pendiente: {
     borderWidth: 1.5,
     borderStyle: 'dashed',

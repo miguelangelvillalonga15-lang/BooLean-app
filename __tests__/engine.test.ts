@@ -142,6 +142,15 @@ describe('sesión de lección', () => {
     expect(r.xp).toBe(leccion.xp);
   });
 
+  it('cuenta el combo de aciertos seguidos y lo corta con un error', () => {
+    const estado = jugar(leccion, (id, intento) => id === 'p3' && intento === 1);
+    // p1, p2 bien (combo 2) → p3 mal (0) → p4, p5, p6 y el repaso de p3 bien (4)
+    expect(estado.combo).toBe(4);
+    expect(estado.mejorCombo).toBe(4);
+    const perfecta = jugar(leccion, () => false);
+    expect(perfecta.mejorCombo).toBe(6);
+  });
+
   it('no avanza un ejercicio sin responder', () => {
     let estado = iniciarSesion(leccion);
     while (estado.cola[estado.indice].paso.tipo === 'concepto' || estado.cola[estado.indice].paso.tipo === 'ejemplo') {

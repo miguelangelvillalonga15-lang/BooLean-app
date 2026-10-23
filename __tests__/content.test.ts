@@ -108,6 +108,8 @@ describe('contenido', () => {
       frasesBoo.racha_perdida,
       frasesBoo.saludo,
       frasesBoo.meta_cumplida,
+      frasesBoo.dormida,
+      frasesBoo.mimos,
       ...Object.values(frasesBoo.resultado),
     ];
     listas.forEach((l) => expect(l.length).toBeGreaterThan(0));

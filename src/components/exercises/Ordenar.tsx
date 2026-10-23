@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, LinearTransition, ZoomIn } from 'react-native-reanimated';
 
 import type { EjercicioOrdenar } from '@/types/content';
 import { vibrar } from '@/lib/haptics';
@@ -38,7 +39,11 @@ export function Ordenar({ ejercicio, respuesta, onCambiar, bloqueado }: Props) {
           </Texto>
         ) : (
           respuesta.map((id, i) => (
-            <View key={id} style={estilos.filaElegida}>
+            <Animated.View
+              key={id}
+              entering={ZoomIn.springify().damping(12)}
+              layout={LinearTransition.springify().damping(14)}
+              style={estilos.filaElegida}>
               <Texto variante="etiqueta" color={colores.violeta} style={estilos.numero}>
                 {i + 1}
               </Texto>
@@ -54,7 +59,7 @@ export function Ordenar({ ejercicio, respuesta, onCambiar, bloqueado }: Props) {
                   }}
                 />
               </View>
-            </View>
+            </Animated.View>
           ))
         )}
       </View>
@@ -63,16 +68,17 @@ export function Ordenar({ ejercicio, respuesta, onCambiar, bloqueado }: Props) {
         {mezclados
           .filter((it) => !respuesta.includes(it.id))
           .map((it) => (
-            <Opcion
-              key={it.id}
-              compacta
-              texto={it.texto}
-              deshabilitada={bloqueado}
-              onPress={() => {
-                vibrar.toque();
-                onCambiar([...respuesta, it.id]);
-              }}
-            />
+            <Animated.View key={it.id} entering={FadeIn} layout={LinearTransition.springify().damping(14)}>
+              <Opcion
+                compacta
+                texto={it.texto}
+                deshabilitada={bloqueado}
+                onPress={() => {
+                  vibrar.toque();
+                  onCambiar([...respuesta, it.id]);
+                }}
+              />
+            </Animated.View>
           ))}
       </View>
     </View>

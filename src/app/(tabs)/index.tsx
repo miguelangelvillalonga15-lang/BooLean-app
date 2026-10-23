@@ -1,8 +1,11 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from 'expo-router';
-import { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, { Easing, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
+import { Llama } from '@/components/animaciones/Llama';
+import { TextoTipeado } from '@/components/animaciones/TextoTipeado';
 import { Boo } from '@/components/Boo';
 import { GraficoLecciones } from '@/components/graficos/GraficoLecciones';
 import { GraficoSemana } from '@/components/graficos/GraficoSemana';
@@ -13,8 +16,10 @@ import { Texto } from '@/components/ui/Texto';
 import { curso, frasesBoo, glosario, obtenerLeccion } from '@/content';
 import { estadoLeccion, META_XP, siguienteLeccion, ultimosDias, xpDeHoy } from '@/engine/progreso';
 import { claveDia, rachaVigente } from '@/engine/streak';
+import { vibrar } from '@/lib/haptics';
+import { sonar } from '@/lib/sonidos';
 import { useProgreso } from '@/store/progress';
-import { colores, ESPACIO_PESTANAS, espacio } from '@/theme';
+import { colores, ESPACIO_PESTANAS, espacio, fuentes, radio } from '@/theme';
 import type { BooAnimo } from '@/types/content';
 
 export default function Inicio() {
@@ -34,27 +39,90 @@ export default function Inicio() {
   const numeroUnidad = curso.unidades.indexOf(unidad) + 1;
   const palabras = glosario.filter((t) => progreso.lecciones[t.leccion]?.completada).length;
 
-  // Boo reacciona a la situación (racha, meta); la semilla mantiene fija la frase elegida.
+  // Cada vez que volvés al inicio, los gráficos crecen de nuevo.
+  const [visita, setVisita] = useState(0);
+  useFocusEffect(useCallback(() => setVisita((v) => v + 1), []));
+
+  // Festejo de la meta: la celda pasa de FALSO a VERDADERO tipeando, una vez por día.
+  const tipearMeta = metaCumplida && progreso.metaCelebrada !== hoy && visita > 0;
+  const [destello, setDestello] = useState(false);
+
+  // Boo reacciona a la situación; la semilla mantiene fija la frase elegida.
   const [semilla] = useState(Math.random);
   const frase = (lista: string[]) => lista[Math.floor(semilla * lista.length)];
+  const [reaccion, setReaccion] = useState<{ animo: BooAnimo; mensaje?: string } | null>(null);
+  const [purrs, setPurrs] = useState(0);
+  const dormida = xpHoy === 0 && !racha.perdida;
+
   const boo: { animo: BooAnimo; mensaje: string } = racha.perdida
     ? { animo: 'decepcionada', mensaje: frase(frasesBoo.racha_perdida) }
     : metaCumplida
       ? { animo: 'contenta', mensaje: frase(frasesBoo.meta_cumplida) }
-      : { animo: 'feliz', mensaje: frase(frasesBoo.saludo).replace('{nombre}', nombre) };
+      : dormida
+        ? { animo: 'dormida', mensaje: frase(frasesBoo.dormida) }
+        : { animo: 'feliz', mensaje: frase(frasesBoo.saludo).replace('{nombre}', nombre) };
 
-  const abrir = (id: string) => router.push({ pathname: '/leccion/[id]', params: { id } });
+  useEffect(() => {
+    if (!reaccion) return;
+    const t = setTimeout(() => setReaccion(null), 1800);
+    return () => clearTimeout(t);
+  }, [reaccion]);
+
+  const mimar = () => {
+    sonar('ronroneo');
+    vibrar.ronroneo();
+    setPurrs((n) => n + 1);
+    setReaccion({ animo: 'enamorada', mensaje: frasesBoo.mimos[purrs % frasesBoo.mimos.length] });
+  };
+
+  const abrir = (id: string) => {
+    if (dormida) {
+      // Boo se despierta de un salto antes de arrancar.
+      sonar('miau');
+      vibrar.suave();
+      setReaccion({ animo: 'sorprendida', mensaje: '¡Miau! ¡Estoy despierta!' });
+      setTimeout(() => router.push({ pathname: '/leccion/[id]', params: { id } }), 550);
+    } else {
+      router.push({ pathname: '/leccion/[id]', params: { id } });
+    }
+  };
 
   return (
     <Pantalla bordes={['top']} grilla espacioInferior={ESPACIO_PESTANAS}>
       <View style={estilos.encabezado}>
-        <Texto variante="etiqueta" color={colores.primario}>
-          booLean.app
-        </Texto>
-        <Texto variante="titulo">{nombre ? `Hola, ${nombre}` : 'Hola'}</Texto>
+        <View style={{ flex: 1, gap: espacio.xs }}>
+          <Texto variante="etiqueta" color={colores.primario}>
+            booLean.app
+          </Texto>
+          <Texto variante="titulo">{nombre ? `Hola, ${nombre}` : 'Hola'}</Texto>
+        </View>
+        <Pressable
+          accessibilityRole="switch"
+          accessibilityState={{ checked: progreso.sonido }}
+          accessibilityLabel="Sonido"
+          hitSlop={10}
+          onPress={() => {
+            progreso.alternarSonido();
+            vibrar.toque();
+          }}
+          style={estilos.botonSonido}>
+          <Ionicons
+            name={progreso.sonido ? 'volume-high' : 'volume-mute'}
+            size={20}
+            color={progreso.sonido ? colores.texto : colores.textoSuave}
+          />
+        </Pressable>
       </View>
 
-      <Boo animo={boo.animo} mensaje={boo.mensaje} tamano={64} />
+      <View>
+        <Boo
+          animo={reaccion?.animo ?? boo.animo}
+          mensaje={reaccion?.mensaje ?? boo.mensaje}
+          tamano={64}
+          alTocar={mimar}
+        />
+        {purrs > 0 ? <Purr key={purrs} /> : null}
+      </View>
 
       {/* Tu día, en forma de planilla */}
       <Tarjeta style={estilos.sinRelleno}>
@@ -64,16 +132,53 @@ export default function Inicio() {
             hoy.csv
           </Texto>
         </View>
-        <Fila clave="racha" valor={`${racha.actual} ${racha.actual === 1 ? 'día' : 'días'}`} icono="flame" color={colores.racha} />
-        <Fila clave="xp_total" valor={String(progreso.xpTotal)} icono="star" color={colores.xp} />
-        <Fila clave="xp_hoy" valor={`${xpHoy} / ${metaXp}`} icono="flag" color={colores.violeta} />
+        <Fila
+          clave="racha"
+          icono={<Llama racha={racha.actual} tamano={16} />}
+          valor={<Valor>{`${racha.actual} ${racha.actual === 1 ? 'día' : 'días'}`}</Valor>}
+        />
+        <Fila clave="xp_total" icono={<Ionicons name="star" size={16} color={colores.xp} />} valor={<Valor>{progreso.xpTotal}</Valor>} />
+        <Fila
+          clave="xp_hoy"
+          icono={<Ionicons name="flag" size={16} color={colores.violeta} />}
+          valor={<Valor>{`${xpHoy} / ${metaXp}`}</Valor>}
+        />
         <Fila
           clave="meta_cumplida"
-          valor={metaCumplida ? 'VERDADERO' : 'FALSO'}
-          icono={metaCumplida ? 'checkmark-circle' : 'ellipse-outline'}
-          color={metaCumplida ? colores.primario : colores.rosa}
-          resaltar
+          icono={
+            <Ionicons
+              name={metaCumplida ? 'checkmark-circle' : 'ellipse-outline'}
+              size={16}
+              color={metaCumplida ? colores.primario : colores.rosa}
+            />
+          }
+          destello={destello}
           ultima
+          valor={
+            tipearMeta ? (
+              <TextoTipeado
+                key={visita}
+                de="FALSO"
+                a="VERDADERO"
+                retraso={700}
+                variante="numero"
+                color={colores.primario}
+                style={estilos.valor}
+                alTipear={() => sonar('clic')}
+                alTerminar={() => {
+                  sonar('combo');
+                  vibrar.acierto();
+                  setDestello(true);
+                  setTimeout(() => setDestello(false), 900);
+                  progreso.marcarMetaCelebrada(hoy);
+                }}
+              />
+            ) : (
+              <Valor color={metaCumplida ? colores.primario : colores.rosa}>
+                {metaCumplida ? 'VERDADERO' : 'FALSO'}
+              </Valor>
+            )
+          }
         />
       </Tarjeta>
 
@@ -86,6 +191,7 @@ export default function Inicio() {
         <Texto variante="titulo">{unidad.titulo}</Texto>
         <View style={estilos.grafico}>
           <GraficoLecciones
+            key={visita}
             barras={unidad.lecciones.map((id) => ({
               id,
               estado: estadoLeccion(curso, progreso, id),
@@ -117,7 +223,7 @@ export default function Inicio() {
             - - meta {metaXp} XP
           </Texto>
         </View>
-        <GraficoSemana dias={ultimosDias(progreso, hoy)} hoy={hoy} meta={metaXp} />
+        <GraficoSemana key={visita} dias={ultimosDias(progreso, hoy)} hoy={hoy} meta={metaXp} />
       </Tarjeta>
 
       <View style={estilos.filaTarjetas}>
@@ -144,36 +250,74 @@ export default function Inicio() {
   );
 }
 
+/** "purr~" que sube y se desvanece cuando le hacés mimos a Boo. */
+function Purr() {
+  const t = useSharedValue(0);
+  useEffect(() => {
+    t.value = withTiming(1, { duration: 1300, easing: Easing.out(Easing.quad) });
+  }, [t]);
+  const estilo = useAnimatedStyle(() => ({
+    opacity: 1 - t.value,
+    transform: [{ translateY: -40 * t.value }, { rotate: `${-10 + t.value * 20}deg` }],
+  }));
+  return (
+    <Animated.Text pointerEvents="none" style={[estilos.purr, estilo]}>
+      purr~ 💕
+    </Animated.Text>
+  );
+}
+
+function Valor({ children, color = colores.texto }: { children: ReactNode; color?: string }) {
+  return (
+    <Texto variante="numero" style={estilos.valor} color={color}>
+      {children}
+    </Texto>
+  );
+}
+
 type FilaProps = {
   clave: string;
-  valor: string;
-  icono: keyof typeof Ionicons.glyphMap;
-  color: string;
-  resaltar?: boolean;
+  icono: ReactNode;
+  valor: ReactNode;
+  destello?: boolean;
   ultima?: boolean;
 };
 
 /** Una fila de la planilla "hoy.csv": nombre de la variable y su valor. */
-function Fila({ clave, valor, icono, color, resaltar, ultima }: FilaProps) {
+function Fila({ clave, icono, valor, destello, ultima }: FilaProps) {
   return (
-    <View style={[estilos.fila, !ultima && estilos.filaBorde]}>
+    <View style={[estilos.fila, !ultima && estilos.filaBorde, destello && estilos.destello]}>
       <View style={estilos.celdaClave}>
-        <Ionicons name={icono} size={16} color={color} />
+        <View style={estilos.icono}>{icono}</View>
         <Texto variante="codigo" color={colores.textoSuave}>
           {clave}
         </Texto>
       </View>
-      <View style={estilos.celdaValor}>
-        <Texto variante="numero" style={estilos.valor} color={resaltar ? color : colores.texto}>
-          {valor}
-        </Texto>
-      </View>
+      <View style={estilos.celdaValor}>{valor}</View>
     </View>
   );
 }
 
 const estilos = StyleSheet.create({
-  encabezado: { gap: espacio.xs, marginTop: espacio.s },
+  encabezado: { flexDirection: 'row', alignItems: 'center', marginTop: espacio.s },
+  botonSonido: {
+    width: 40,
+    height: 40,
+    borderRadius: radio.redondo,
+    borderWidth: 1,
+    borderColor: colores.borde,
+    backgroundColor: colores.superficie,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  purr: {
+    position: 'absolute',
+    left: 20,
+    top: -6,
+    color: colores.rosa,
+    fontFamily: fuentes.monoNegrita,
+    fontSize: 15,
+  },
   sinRelleno: { padding: 0, gap: 0, overflow: 'hidden' },
   planillaTitulo: {
     flexDirection: 'row',
@@ -187,6 +331,7 @@ const estilos = StyleSheet.create({
   },
   fila: { flexDirection: 'row', alignItems: 'stretch' },
   filaBorde: { borderBottomWidth: 1, borderColor: colores.borde },
+  destello: { backgroundColor: colores.primarioSuave },
   celdaClave: {
     flex: 1,
     flexDirection: 'row',
@@ -197,6 +342,7 @@ const estilos = StyleSheet.create({
     borderRightWidth: 1,
     borderColor: colores.borde,
   },
+  icono: { width: 20, alignItems: 'center' },
   celdaValor: { flex: 1, justifyContent: 'center', paddingHorizontal: espacio.m },
   valor: { fontSize: 17, textAlign: 'right' },
   unidad: { padding: espacio.l, gap: espacio.s },

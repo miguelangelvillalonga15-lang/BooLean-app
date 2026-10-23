@@ -1,6 +1,16 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { router } from 'expo-router';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, {
+  BounceIn,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+  ZoomIn,
+} from 'react-native-reanimated';
 
 import { BooDibujo } from '@/components/Boo';
 import { Pantalla } from '@/components/ui/Pantalla';
@@ -8,17 +18,33 @@ import { Tarjeta } from '@/components/ui/Tarjeta';
 import { Texto } from '@/components/ui/Texto';
 import { curso, obtenerLeccion } from '@/content';
 import { estadoLeccion, type EstadoLeccion } from '@/engine/progreso';
+import { vibrar } from '@/lib/haptics';
+import { sonar } from '@/lib/sonidos';
 import { useProgreso } from '@/store/progress';
 import { colores, ESPACIO_PESTANAS, espacio, radio } from '@/theme';
 
 // Cada lección se corre a un costado para que el camino haga zigzag.
 const DESPLAZAMIENTOS = [0, 1, 0, -1];
 const PASO_X = 64;
+const ALTO_TRAMO = 72;
+const ENTRE_HUELLAS = 450;
 
 /** Camino de lecciones: Boo deja huellitas entre una y otra. */
 export default function Aprender() {
   const progreso = useProgreso();
   const abrir = (id: string) => router.push({ pathname: '/leccion/[id]', params: { id } });
+
+  // Si venís de terminar una lección nueva, Boo camina hasta la siguiente dejando huellitas.
+  const [caminando, setCaminando] = useState<string | null>(null);
+  useFocusEffect(
+    useCallback(() => {
+      const pendiente = useProgreso.getState().huellasPendientes;
+      if (pendiente) {
+        setCaminando(pendiente);
+        useProgreso.getState().marcarHuellasVistas();
+      }
+    }, []),
+  );
 
   return (
     <Pantalla bordes={['top']} grilla espacioInferior={ESPACIO_PESTANAS}>
@@ -47,18 +73,35 @@ export default function Aprender() {
               const estado = estadoLeccion(curso, progreso, id);
               const desde = DESPLAZAMIENTOS[i % 4];
               const hasta = DESPLAZAMIENTOS[(i + 1) % 4];
+              const anterior = unidad.lecciones[i - 1];
+              const nodo = (
+                <NodoLeccion
+                  numero={i + 1}
+                  titulo={leccion?.titulo ?? id}
+                  minutos={leccion?.minutos ?? 0}
+                  estado={estado}
+                  desplazamiento={desde}
+                  onPress={() => abrir(id)}
+                />
+              );
               return (
                 <View key={id} style={estilos.tramo}>
-                  <NodoLeccion
-                    numero={i + 1}
-                    titulo={leccion?.titulo ?? id}
-                    minutos={leccion?.minutos ?? 0}
-                    estado={estado}
-                    desplazamiento={desde}
-                    onPress={() => abrir(id)}
-                  />
+                  {caminando && anterior === caminando ? (
+                    // La lección recién desbloqueada aparece rebotando cuando Boo llega.
+                    <Animated.View key={caminando} entering={BounceIn.delay(ENTRE_HUELLAS * 3 + 300)}>
+                      {nodo}
+                    </Animated.View>
+                  ) : (
+                    nodo
+                  )}
                   {i < unidad.lecciones.length - 1 ? (
-                    <Huellitas desde={desde} hasta={hasta} pisadas={estado === 'completada'} />
+                    <Huellitas
+                      key={caminando === id ? `caminando-${id}` : id}
+                      desde={desde}
+                      hasta={hasta}
+                      pisadas={estado === 'completada'}
+                      animar={caminando === id}
+                    />
                   ) : null}
                 </View>
               );
@@ -77,23 +120,66 @@ export default function Aprender() {
   );
 }
 
+type HuellitasProps = { desde: number; hasta: number; pisadas: boolean; animar: boolean };
+
 /** Tres huellitas en diagonal que unen una lección con la siguiente. */
-function Huellitas({ desde, hasta, pisadas }: { desde: number; hasta: number; pisadas: boolean }) {
+function Huellitas({ desde, hasta, pisadas, animar }: HuellitasProps) {
+  useEffect(() => {
+    if (!animar) return;
+    const timers = [0, 1, 2].map((k) =>
+      setTimeout(() => {
+        sonar('clic');
+        vibrar.suave();
+      }, 200 + k * ENTRE_HUELLAS),
+    );
+    timers.push(setTimeout(() => sonar('miau'), 200 + ENTRE_HUELLAS * 3 + 200));
+    return () => timers.forEach(clearTimeout);
+  }, [animar]);
+
   return (
     <View style={estilos.huellitas} accessible={false}>
       {[0.25, 0.5, 0.75].map((t, k) => {
         const x = (desde + (hasta - desde) * t) * PASO_X + (k % 2 === 0 ? -8 : 8);
-        return (
+        const huella = (
           <Ionicons
-            key={t}
             name="paw"
             size={16}
             color={pisadas ? colores.primario : colores.bloqueado}
             style={{ transform: [{ translateX: x }, { rotate: `${(hasta - desde) * -25}deg` }] }}
           />
         );
+        return animar ? (
+          <Animated.View key={t} entering={ZoomIn.delay(200 + k * ENTRE_HUELLAS).springify()}>
+            {huella}
+          </Animated.View>
+        ) : (
+          <View key={t}>{huella}</View>
+        );
       })}
+      {animar ? <BooCaminando desde={desde} hasta={hasta} /> : null}
     </View>
+  );
+}
+
+/** Boo chiquita que baja por el tramo, de una lección a la otra. */
+function BooCaminando({ desde, hasta }: { desde: number; hasta: number }) {
+  const t = useSharedValue(0);
+  useEffect(() => {
+    t.value = withDelay(100, withTiming(1, { duration: ENTRE_HUELLAS * 3 + 200, easing: Easing.inOut(Easing.quad) }));
+  }, [t]);
+  const estilo = useAnimatedStyle(() => ({
+    opacity: t.value < 0.9 ? 1 : (1 - t.value) * 10,
+    transform: [
+      { translateX: (desde + (hasta - desde) * t.value) * PASO_X + 30 },
+      { translateY: -ALTO_TRAMO / 2 + t.value * ALTO_TRAMO },
+      // Saltitos al caminar
+      { rotate: `${Math.sin(t.value * Math.PI * 6) * 8}deg` },
+    ],
+  }));
+  return (
+    <Animated.View pointerEvents="none" style={[estilos.booCaminando, estilo]}>
+      <BooDibujo animo="contenta" tamano={34} />
+    </Animated.View>
   );
 }
 
@@ -184,7 +270,8 @@ const estilos = StyleSheet.create({
     paddingVertical: 1,
   },
   tituloNodo: { textAlign: 'center' },
-  huellitas: { height: 72, justifyContent: 'space-around', alignItems: 'center', paddingVertical: espacio.xs },
+  huellitas: { height: ALTO_TRAMO, justifyContent: 'space-around', alignItems: 'center', paddingVertical: espacio.xs },
+  booCaminando: { position: 'absolute', top: ALTO_TRAMO / 2 - 17 },
   proximo: {
     flexDirection: 'row',
     alignItems: 'center',

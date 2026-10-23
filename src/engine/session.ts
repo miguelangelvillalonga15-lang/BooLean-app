@@ -19,6 +19,9 @@ export type EstadoSesion = {
   fallados: string[];
   /** Ids de ejercicios con pista usada. */
   pistas: string[];
+  /** Aciertos seguidos (se corta con un error). */
+  combo: number;
+  mejorCombo: number;
   terminada: boolean;
 };
 
@@ -36,6 +39,8 @@ export function iniciarSesion(leccion: Leccion): EstadoSesion {
     ultimaCorrecta: null,
     fallados: [],
     pistas: [],
+    combo: 0,
+    mejorCombo: 0,
     terminada: false,
   };
 }
@@ -60,7 +65,14 @@ export function reducirSesion(estado: EstadoSesion, accion: AccionSesion): Estad
       if (!esEjercicio(item.paso) || estado.fase !== 'respondiendo') return estado;
       const correcta = corregir(item.paso, accion.respuesta);
       if (correcta) {
-        return { ...estado, fase: 'feedback', ultimaCorrecta: true };
+        const combo = estado.combo + 1;
+        return {
+          ...estado,
+          fase: 'feedback',
+          ultimaCorrecta: true,
+          combo,
+          mejorCombo: Math.max(estado.mejorCombo, combo),
+        };
       }
       const fallados = estado.fallados.includes(item.paso.id)
         ? estado.fallados
@@ -69,6 +81,7 @@ export function reducirSesion(estado: EstadoSesion, accion: AccionSesion): Estad
         ...estado,
         fase: 'feedback',
         ultimaCorrecta: false,
+        combo: 0,
         fallados,
         cola: [...estado.cola, { paso: item.paso, repaso: true }],
       };

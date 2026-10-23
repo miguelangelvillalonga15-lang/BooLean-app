@@ -31,7 +31,10 @@ export type BooAnimo =
   | 'pensando'
   | 'triste'
   | 'decepcionada'
-  | 'sorprendida';
+  | 'sorprendida'
+  // Solo para la interfaz (no se usan en los JSON de lecciones):
+  | 'enamorada'
+  | 'dormida';
 
 export type Tabla = {
   columnas: string[];
@@ -108,6 +111,8 @@ export type BooFrases = {
   racha_perdida: string[];
   saludo: string[];
   meta_cumplida: string[];
+  dormida: string[];
+  mimos: string[];
 };
 
 export type TerminoGlosario = {

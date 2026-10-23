@@ -1,5 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 
+import { BarraCrece } from '@/components/animaciones/BarraCrece';
 import { Texto } from '@/components/ui/Texto';
 import { colores, espacio, radio } from '@/theme';
 
@@ -24,7 +25,7 @@ export function GraficoSemana({ dias, hoy, meta }: Props) {
       accessibilityLabel={`XP de los últimos 7 días: ${dias.map((d) => d.xp).join(', ')}`}>
       <View style={[estilos.zona, { height: ALTO }]}>
         <View style={[estilos.lineaMeta, { top: yMeta }]} />
-        {dias.map((d) => {
+        {dias.map((d, i) => {
           const esHoy = d.fecha === hoy;
           const alto = d.xp === 0 ? 4 : Math.max(10, (d.xp / maximo) * ALTO);
           const color = d.xp >= meta ? colores.primario : d.xp > 0 ? colores.violeta : colores.superficieAlta;
@@ -35,12 +36,10 @@ export function GraficoSemana({ dias, hoy, meta }: Props) {
                   {d.xp}
                 </Texto>
               ) : null}
-              <View
-                style={[
-                  estilos.barra,
-                  { height: alto, backgroundColor: color },
-                  esHoy && estilos.barraHoy,
-                ]}
+              <BarraCrece
+                alto={alto}
+                retraso={i * 80}
+                style={[estilos.barra, { backgroundColor: color }, esHoy && estilos.barraHoy]}
               />
             </View>
           );

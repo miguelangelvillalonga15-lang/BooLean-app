@@ -4,6 +4,7 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import type { EjercicioCompletar } from '@/types/content';
 import { vibrar } from '@/lib/haptics';
 import { mezclar } from '@/lib/random';
+import { sonar } from '@/lib/sonidos';
 import { colores, espacio, fuentes, radio } from '@/theme';
 
 import { Texto } from '../ui/Texto';
@@ -57,7 +58,10 @@ export function Completar({ ejercicio, respuesta, onCambiar, bloqueado }: Props)
       ) : (
         <TextInput
           value={respuesta ?? ''}
-          onChangeText={onCambiar}
+          onChangeText={(texto) => {
+            sonar('clic');
+            onCambiar(texto);
+          }}
           editable={!bloqueado}
           placeholder="Escribí tu respuesta"
           placeholderTextColor={colores.textoSuave}

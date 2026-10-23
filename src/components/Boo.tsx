@@ -1,8 +1,18 @@
-import { StyleSheet, View } from 'react-native';
-import Svg, { Circle, Ellipse, G, Path } from 'react-native-svg';
+import { useEffect, useState } from 'react';
+import { Pressable, StyleSheet, View } from 'react-native';
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
+import Svg, { Circle, Ellipse, G, Path, Rect } from 'react-native-svg';
 
 import type { BooAnimo } from '@/types/content';
-import { colores, espacio, radio } from '@/theme';
+import { colores, espacio, fuentes, radio } from '@/theme';
 
 import { Texto } from './ui/Texto';
 
@@ -21,7 +31,12 @@ const c = {
   orejaAdentro: '#4A3A44',
   rubor: '#F49AAE',
   lagrima: '#7CC8FF',
+  corazon: '#FF5C8A',
+  anteojos: '#141218',
 };
+
+/** Hacia dónde mira Boo: x e y van de -1 a 1. */
+export type Mirada = { x: number; y: number };
 
 type Ojo = { x: number; y: number; sobreNegro: boolean };
 const OJOS: Ojo[] = [
@@ -36,6 +51,19 @@ function OjoAbierto({ x, y, mirar = [0, 0], pupila = [3.5, 8] }: Ojo & { mirar?:
       <Ellipse cx={x + mirar[0]} cy={y + mirar[1]} rx={pupila[0]} ry={pupila[1]} fill={c.negro} />
       <Circle cx={x + 4 + mirar[0]} cy={y - 4 + mirar[1]} r={3} fill={c.blanco} />
     </G>
+  );
+}
+
+/** Ojo cerrado: una curva (hacia arriba si está contenta, hacia abajo si duerme o parpadea). */
+function OjoCerrado({ x, y, sobreNegro, curva }: Ojo & { curva: number }) {
+  return (
+    <Path
+      d={`M${x - 12},${y + 2} Q${x},${y + 2 + curva} ${x + 12},${y + 2}`}
+      stroke={sobreNegro ? c.blanco : c.ojoBorde}
+      strokeWidth={3.5}
+      strokeLinecap="round"
+      fill="none"
+    />
   );
 }
 
@@ -56,48 +84,49 @@ function Parpado({ x, y, sobreNegro, alto, caida = 0 }: Ojo & { alto: number; ca
   );
 }
 
-function Ojos({ animo }: { animo: BooAnimo }) {
+function Ojos({ animo, mirar, parpadeo }: { animo: BooAnimo; mirar?: Mirada; parpadeo: boolean }) {
+  const desvio = mirar ? [mirar.x * 5, mirar.y * 4] : undefined;
   return (
     <G>
       {OJOS.map((o) => {
+        if (animo === 'enamorada') {
+          return (
+            <Path
+              key={o.x}
+              d={`M${o.x},${o.y + 10} C${o.x - 17},${o.y - 1} ${o.x - 10},${o.y - 15} ${o.x},${o.y - 5} C${o.x + 10},${o.y - 15} ${o.x + 17},${o.y - 1} ${o.x},${o.y + 10} Z`}
+              fill={c.corazon}
+            />
+          );
+        }
+        if (animo === 'contenta') return <OjoCerrado key={o.x} {...o} curva={-12} />;
+        if (animo === 'dormida' || parpadeo) return <OjoCerrado key={o.x} {...o} curva={6} />;
         switch (animo) {
-          case 'contenta':
-            return (
-              <Path
-                key={o.x}
-                d={`M${o.x - 12},${o.y + 3} Q${o.x},${o.y - 10} ${o.x + 12},${o.y + 3}`}
-                stroke={o.sobreNegro ? c.blanco : c.ojoBorde}
-                strokeWidth={3.5}
-                strokeLinecap="round"
-                fill="none"
-              />
-            );
           case 'pensando':
-            return <OjoAbierto key={o.x} {...o} mirar={[5, -3]} />;
+            return <OjoAbierto key={o.x} {...o} mirar={desvio ?? [5, -3]} />;
           case 'sorprendida':
             return (
               <G key={o.x}>
                 <Circle cx={o.x} cy={o.y} r={13} fill={c.ojo} stroke={c.ojoBorde} strokeWidth={2.5} />
-                <Circle cx={o.x} cy={o.y} r={4.5} fill={c.negro} />
+                <Circle cx={o.x + (desvio?.[0] ?? 0) * 0.6} cy={o.y + (desvio?.[1] ?? 0) * 0.6} r={4.5} fill={c.negro} />
                 <Circle cx={o.x + 4} cy={o.y - 5} r={2.5} fill={c.blanco} />
               </G>
             );
           case 'triste':
             return (
               <G key={o.x}>
-                <OjoAbierto {...o} pupila={[6, 8]} />
+                <OjoAbierto {...o} mirar={desvio} pupila={[6, 8]} />
                 <Parpado {...o} alto={4} caida={6} />
               </G>
             );
           case 'decepcionada':
             return (
               <G key={o.x}>
-                <OjoAbierto {...o} />
+                <OjoAbierto {...o} mirar={desvio} />
                 <Parpado {...o} alto={11} />
               </G>
             );
           default:
-            return <OjoAbierto key={o.x} {...o} />;
+            return <OjoAbierto key={o.x} {...o} mirar={desvio} />;
         }
       })}
     </G>
@@ -110,6 +139,7 @@ function Boca({ animo }: { animo: BooAnimo }) {
   switch (animo) {
     case 'presentandose':
     case 'contenta':
+    case 'enamorada':
       return (
         <G>
           {centro}
@@ -133,6 +163,13 @@ function Boca({ animo }: { animo: BooAnimo }) {
       );
     case 'sorprendida':
       return <Ellipse cx={100} cy={153} rx={5} ry={6.5} fill={c.bocaAdentro} />;
+    case 'dormida':
+      return (
+        <G>
+          {centro}
+          <Path d="M93,146 Q96.5,150 100,146 Q103.5,150 107,146" {...trazo} />
+        </G>
+      );
     default:
       return (
         <G>
@@ -143,9 +180,40 @@ function Boca({ animo }: { animo: BooAnimo }) {
   }
 }
 
-/** Dibujo de Boo. `tamano` es el ancho en puntos. */
-export function BooDibujo({ animo = 'feliz', tamano = 96 }: { animo?: BooAnimo; tamano?: number }) {
-  const rubor = animo === 'presentandose' || animo === 'contenta';
+/** Anteojos de sol para cuando venís con combo. 😎 */
+function Anteojos() {
+  return (
+    <G>
+      <Path d="M48,106 L32,100 M152,106 L168,100" stroke={c.anteojos} strokeWidth={4} strokeLinecap="round" />
+      <Rect x={50} y={99} width={44} height={26} rx={10} fill={c.anteojos} />
+      <Rect x={106} y={99} width={44} height={26} rx={10} fill={c.anteojos} />
+      <Path d="M94,108 Q100,103 106,108" stroke={c.anteojos} strokeWidth={4} fill="none" />
+      <Path d="M58,106 L70,104 M114,106 L126,104" stroke={c.blanco} strokeWidth={3} strokeLinecap="round" opacity={0.5} />
+    </G>
+  );
+}
+
+type DibujoProps = {
+  animo?: BooAnimo;
+  /** Ancho en puntos. */
+  tamano?: number;
+  mirar?: Mirada;
+  parpadeo?: boolean;
+  anteojos?: boolean;
+  /** Mueve la oreja derecha (un tic gatuno). */
+  orejaMovida?: boolean;
+};
+
+/** Dibujo de Boo, sin animaciones (sirve también para generar el ícono). */
+export function BooDibujo({
+  animo = 'feliz',
+  tamano = 96,
+  mirar,
+  parpadeo = false,
+  anteojos = false,
+  orejaMovida = false,
+}: DibujoProps) {
+  const rubor = animo === 'presentandose' || animo === 'contenta' || animo === 'enamorada';
   return (
     <Svg width={tamano} height={tamano} viewBox="0 0 200 200">
       {/* Pechera peluda */}
@@ -154,15 +222,13 @@ export function BooDibujo({ animo = 'feliz', tamano = 96 }: { animo?: BooAnimo; 
 
       {/* Orejas */}
       <Path d="M36,104 L44,22 Q46,15 53,20 L102,62 Z" fill={c.negro} />
-      <Path d="M164,104 L156,22 Q154,15 147,20 L98,62 Z" fill={c.negro} />
       <Path d="M52,88 L55,38 L86,66 Z" fill={c.orejaAdentro} />
-      <Path d="M148,88 L145,38 L114,66 Z" fill={c.orejaAdentro} />
-      <G stroke={c.blanco} strokeWidth={2.5} strokeLinecap="round" opacity={0.85}>
-        <Path d="M56,82 L62,56" />
-        <Path d="M63,84 L72,62" />
-        <Path d="M144,82 L138,56" />
-        <Path d="M137,84 L128,62" />
+      <G transform={orejaMovida ? 'rotate(14 130 80)' : undefined}>
+        <Path d="M164,104 L156,22 Q154,15 147,20 L98,62 Z" fill={c.negro} />
+        <Path d="M148,88 L145,38 L114,66 Z" fill={c.orejaAdentro} />
+        <Path d="M144,82 L138,56 M137,84 L128,62" stroke={c.blanco} strokeWidth={2.5} strokeLinecap="round" opacity={0.85} />
       </G>
+      <Path d="M56,82 L62,56 M63,84 L72,62" stroke={c.blanco} strokeWidth={2.5} strokeLinecap="round" opacity={0.85} />
 
       {/* Cara con mejillas peludas */}
       <Path
@@ -177,7 +243,8 @@ export function BooDibujo({ animo = 'feliz', tamano = 96 }: { animo?: BooAnimo; 
       />
       <Ellipse cx={69} cy={109} rx={25} ry={19} fill={c.negro} transform="rotate(-12 69 109)" />
 
-      <Ojos animo={animo} />
+      <Ojos animo={animo} mirar={mirar} parpadeo={parpadeo} />
+      {anteojos ? <Anteojos /> : null}
 
       {rubor ? (
         <G opacity={0.55}>
@@ -202,20 +269,139 @@ export function BooDibujo({ animo = 'feliz', tamano = 96 }: { animo?: BooAnimo; 
   );
 }
 
+/** Espera un tiempo al azar entre `min` y `max` milisegundos. */
+const azar = (min: number, max: number) => min + Math.random() * (max - min);
+
+/** Parpadeo y tic de oreja cada tanto, como una gata de verdad. */
+function useTicsGatunos(activo: boolean) {
+  const [parpadeo, setParpadeo] = useState(false);
+  const [oreja, setOreja] = useState(false);
+
+  useEffect(() => {
+    if (!activo) return;
+    let vivo = true;
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    const parpadear = () => {
+      timers.push(
+        setTimeout(() => {
+          if (!vivo) return;
+          setParpadeo(true);
+          timers.push(setTimeout(() => setParpadeo(false), 140));
+          parpadear();
+        }, azar(2500, 5500)),
+      );
+    };
+    const moverOreja = () => {
+      timers.push(
+        setTimeout(() => {
+          if (!vivo) return;
+          setOreja(true);
+          timers.push(setTimeout(() => setOreja(false), 220));
+          moverOreja();
+        }, azar(5000, 9000)),
+      );
+    };
+    parpadear();
+    moverOreja();
+    return () => {
+      vivo = false;
+      timers.forEach(clearTimeout);
+    };
+  }, [activo]);
+
+  return { parpadeo, oreja };
+}
+
+/** "Zzz" que flotan cuando Boo duerme. */
+function Zzz({ tamano }: { tamano: number }) {
+  return (
+    <View pointerEvents="none" style={[StyleSheet.absoluteFill, { alignItems: 'flex-end' }]}>
+      {[0, 1, 2].map((i) => (
+        <Zeta key={i} retraso={i * 700} tamano={tamano} />
+      ))}
+    </View>
+  );
+}
+
+function Zeta({ retraso, tamano }: { retraso: number; tamano: number }) {
+  const t = useSharedValue(0);
+  useEffect(() => {
+    t.value = withDelay(retraso, withRepeat(withTiming(1, { duration: 2100, easing: Easing.out(Easing.quad) }), -1));
+  }, [t, retraso]);
+  const estilo = useAnimatedStyle(() => ({
+    opacity: t.value < 0.15 ? t.value / 0.15 : 1 - t.value,
+    transform: [{ translateY: -t.value * tamano * 0.5 }, { translateX: t.value * tamano * 0.15 }, { scale: 0.7 + t.value * 0.6 }],
+  }));
+  return (
+    <Animated.Text style={[estilos.zeta, { fontSize: Math.max(12, tamano * 0.22), top: tamano * 0.15 }, estilo]}>
+      z
+    </Animated.Text>
+  );
+}
+
 type Props = {
   animo?: BooAnimo;
   /** Si está, Boo lo dice en un globito al costado. */
   mensaje?: string;
   tamano?: number;
+  mirar?: Mirada;
+  anteojos?: boolean;
+  /** Respira, parpadea y mueve la oreja. Activado por defecto. */
+  viva?: boolean;
+  /** Si está, se puede tocar a Boo. */
+  alTocar?: () => void;
 };
 
-export function Boo({ animo = 'feliz', mensaje, tamano = 64 }: Props) {
-  const cara = (
-    <View
-      accessible
-      accessibilityLabel={`Boo, ${animo}`}
-      style={[estilos.cara, { width: tamano * 1.2, height: tamano * 1.2 }]}>
-      <BooDibujo animo={animo} tamano={tamano} />
+export function Boo({ animo = 'feliz', mensaje, tamano = 64, mirar, anteojos, viva = true, alTocar }: Props) {
+  const { parpadeo, oreja } = useTicsGatunos(viva);
+  const respiracion = useSharedValue(0);
+  const dormida = animo === 'dormida';
+
+  useEffect(() => {
+    if (!viva) return;
+    respiracion.value = withRepeat(
+      withSequence(
+        withTiming(1, { duration: dormida ? 2200 : 1500, easing: Easing.inOut(Easing.sin) }),
+        withTiming(0, { duration: dormida ? 2200 : 1500, easing: Easing.inOut(Easing.sin) }),
+      ),
+      -1,
+    );
+  }, [viva, dormida, respiracion]);
+
+  const estiloRespiracion = useAnimatedStyle(() => ({
+    transform: [
+      { translateY: respiracion.value * (dormida ? 2 : -1.5) },
+      { scale: 1 + respiracion.value * (dormida ? 0.035 : 0.025) },
+    ],
+  }));
+
+  const dibujo = (
+    <Animated.View style={estiloRespiracion}>
+      <BooDibujo
+        animo={animo}
+        tamano={tamano}
+        mirar={mirar}
+        anteojos={anteojos}
+        parpadeo={parpadeo}
+        orejaMovida={oreja}
+      />
+    </Animated.View>
+  );
+
+  const contenido = (
+    <View style={[estilos.cara, { width: tamano * 1.2, height: tamano * 1.2 }]}>
+      {dibujo}
+      {dormida && viva ? <Zzz tamano={tamano} /> : null}
+    </View>
+  );
+
+  const cara = alTocar ? (
+    <Pressable accessibilityRole="button" accessibilityLabel={`Boo, ${animo}. Tocala`} onPress={alTocar}>
+      {contenido}
+    </Pressable>
+  ) : (
+    <View accessible accessibilityLabel={`Boo, ${animo}`}>
+      {contenido}
     </View>
   );
 
@@ -238,7 +424,6 @@ const estilos = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: radio.redondo,
     backgroundColor: colores.violetaSuave,
-    overflow: 'hidden',
   },
   globo: {
     flex: 1,
@@ -248,4 +433,5 @@ const estilos = StyleSheet.create({
     borderRadius: radio.m,
     padding: espacio.m,
   },
+  zeta: { position: 'absolute', right: 0, color: colores.violeta, fontFamily: fuentes.monoNegrita },
 });

@@ -7,20 +7,43 @@ import { aplicarResultado, PROGRESO_INICIAL, type Perfil, type Progreso } from '
 import type { ResultadoLeccion } from '@/engine/session';
 import { claveDia } from '@/engine/streak';
 
+/** Preferencias y avisos de la interfaz (no son parte del progreso de aprendizaje). */
+type EstadoUI = {
+  sonido: boolean;
+  /** Lección recién completada por primera vez: el camino anima sus huellitas. */
+  huellasPendientes: string | null;
+  /** Día en que ya se festejó la meta cumplida en la planilla del inicio. */
+  metaCelebrada: string | null;
+};
+
 type Acciones = {
   guardarPerfil: (perfil: Perfil) => void;
   registrarLeccion: (resultado: ResultadoLeccion) => void;
+  alternarSonido: () => void;
+  marcarHuellasVistas: () => void;
+  marcarMetaCelebrada: (dia: string) => void;
   reiniciar: () => void;
 };
 
-export const useProgreso = create<Progreso & Acciones>()(
+const UI_INICIAL: EstadoUI = { sonido: true, huellasPendientes: null, metaCelebrada: null };
+
+export const useProgreso = create<Progreso & EstadoUI & Acciones>()(
   persist(
     (set) => ({
       ...PROGRESO_INICIAL,
+      ...UI_INICIAL,
       guardarPerfil: (perfil) => set({ perfil }),
       registrarLeccion: (resultado) =>
-        set((estado) => aplicarResultado(estado, resultado, claveDia())),
-      reiniciar: () => set(PROGRESO_INICIAL),
+        set((estado) => ({
+          ...aplicarResultado(estado, resultado, claveDia()),
+          huellasPendientes: estado.lecciones[resultado.leccionId]?.completada
+            ? estado.huellasPendientes
+            : resultado.leccionId,
+        })),
+      alternarSonido: () => set((estado) => ({ sonido: !estado.sonido })),
+      marcarHuellasVistas: () => set({ huellasPendientes: null }),
+      marcarMetaCelebrada: (dia) => set({ metaCelebrada: dia }),
+      reiniciar: () => set({ ...PROGRESO_INICIAL, ...UI_INICIAL }),
     }),
     {
       name: 'boolean-progreso',
@@ -35,9 +58,9 @@ export const useProgreso = create<Progreso & Acciones>()(
             ...resto,
             version: 2,
             historial: xpDelDia?.fecha ? { [xpDelDia.fecha]: xpDelDia.xp } : {},
-          } as Progreso & Acciones;
+          } as Progreso & EstadoUI & Acciones;
         }
-        return estado as Progreso & Acciones;
+        return estado as Progreso & EstadoUI & Acciones;
       },
     },
   ),
