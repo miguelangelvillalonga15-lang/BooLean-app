@@ -1,0 +1,46 @@
+{
+  "saludo": [
+    "¡Hola, {nombre}! ¿Arrancamos con unos datos?",
+    "¡Volviste, {nombre}! Me encanta tu constancia.",
+    "Miau, {nombre}. Hoy es un gran día para aprender data."
+  ],
+  "acierto": [
+    "¡Eso! Sos re analista 😺",
+    "Ni yo lo hacía mejor.",
+    "¡Bien ahí! Seguí así.",
+    "Correctísimo. Me hiciste ronronear."
+  ],
+  "error": [
+    "Casi… mirá la explicación y seguimos.",
+    "Tranqui, de los errores también se aprende.",
+    "Uh, ese no era. Al final de la lección lo repasamos.",
+    "No pasa nada, a mí también me pasa con los ovillos."
+  ],
+  "pista": [
+    "Te tiro una ayudita…",
+    "Psst, mirá esto…",
+    "Una pista de gata analista:"
+  ],
+  "resultado": {
+    "perfecto": [
+      "¡Lección perfecta! Me hiciste ronronear.",
+      "¡Cero errores! Sos un crack de los datos."
+    ],
+    "bien": [
+      "¡Muy bien! Un par de errores, nada grave.",
+      "¡Buenísimo! Ya casi lo tenés dominado."
+    ],
+    "regular": [
+      "Lo terminaste, que es lo importante. Mañana lo repasamos.",
+      "Costó, pero llegaste. La práctica hace al analista."
+    ]
+  },
+  "racha_perdida": [
+    "Mmm… cortaste la racha. Estoy decepcionada, pero te perdono si hoy hacés una lección. 😾",
+    "Te estuve esperando y no viniste… La racha volvió a cero. ¿La recuperamos? 😿"
+  ],
+  "meta_cumplida": [
+    "¡Cumpliste tu meta de hoy! 🎉",
+    "Meta del día lograda. ¡Así me gusta!"
+  ]
+}

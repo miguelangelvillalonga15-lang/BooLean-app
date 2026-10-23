@@ -1,0 +1,105 @@
+{
+  "id": "u1-l1",
+  "unidad": "u1",
+  "titulo": "Datos en todos lados: números, textos y fechas",
+  "minutos": 5,
+  "xp": 15,
+  "pasos": [
+    {
+      "tipo": "concepto",
+      "id": "c1",
+      "boo": "feliz",
+      "titulo": "¿Qué es un dato?",
+      "texto": "Un **dato** es una pieza de información que se puede anotar y guardar. El resultado de un partido, el nombre de una canción o el día que se estrena una serie: todo eso son datos. ¡Están en todos lados!"
+    },
+    {
+      "tipo": "concepto",
+      "id": "c2",
+      "boo": "contenta",
+      "titulo": "Tres tipos básicos",
+      "texto": "**Número**: se puede contar o medir, y hacer cuentas con él (goles, precio, minutos).\n\n**Texto**: letras o palabras (el nombre de un jugador, un género musical).\n\n**Fecha**: un día del calendario (el estreno de una serie)."
+    },
+    {
+      "tipo": "ejemplo",
+      "id": "e1",
+      "titulo": "Un pedido de comida",
+      "texto": "**Plato** es texto, **Precio** es número y **Día del pedido** es fecha.",
+      "tabla": {
+        "columnas": ["Plato", "Precio", "Día del pedido"],
+        "filas": [
+          ["Milanesa napolitana", "8500", "12/03/2026"],
+          ["Empanadas x6", "6000", "13/03/2026"]
+        ]
+      }
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p1",
+      "consigna": "¿Qué tipo de dato es la cantidad de goles de un partido?",
+      "opciones": [
+        { "id": "a", "texto": "Número" },
+        { "id": "b", "texto": "Texto" },
+        { "id": "c", "texto": "Fecha" }
+      ],
+      "correcta": "a",
+      "pista": "¿Se puede contar?",
+      "explicacion": "Los goles se cuentan y se pueden sumar, así que son un **número**."
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p2",
+      "consigna": "\"Bohemian Rhapsody\" es un dato de tipo…",
+      "opciones": [
+        { "id": "a", "texto": "Número" },
+        { "id": "b", "texto": "Texto" },
+        { "id": "c", "texto": "Fecha" }
+      ],
+      "correcta": "b",
+      "explicacion": "El nombre de una canción está hecho de palabras: es **texto**."
+    },
+    {
+      "tipo": "completar",
+      "id": "p3",
+      "consigna": "Completá la frase:",
+      "texto": "El día de estreno de una serie es un dato de tipo ___.",
+      "respuestas": ["fecha"],
+      "banco": ["número", "fecha", "texto"],
+      "pista": "Lo buscarías en un calendario.",
+      "explicacion": "Un día del calendario es una **fecha**."
+    },
+    {
+      "tipo": "completar",
+      "id": "p4",
+      "consigna": "Escribí la palabra que falta:",
+      "texto": "Un dato que se puede contar o medir es de tipo ___.",
+      "respuestas": ["número", "numérico"],
+      "pista": "Es el tipo con el que podés hacer cuentas.",
+      "explicacion": "Lo que se cuenta o se mide es un **número**."
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p5",
+      "consigna": "¿Cuál de estos datos NO es un número?",
+      "opciones": [
+        { "id": "a", "texto": "Precio de una pizza: 9000" },
+        { "id": "b", "texto": "Duración de un tema: 215 segundos" },
+        { "id": "c", "texto": "Género musical: cumbia" },
+        { "id": "d", "texto": "Capítulos de una serie: 8" }
+      ],
+      "correcta": "c",
+      "explicacion": "\"Cumbia\" es una palabra, así que es **texto**. Los demás se pueden contar o medir."
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p6",
+      "consigna": "Un teléfono como 011-4567-8901, ¿conviene guardarlo como número o como texto?",
+      "opciones": [
+        { "id": "a", "texto": "Como número, porque tiene dígitos" },
+        { "id": "b", "texto": "Como texto, porque no se hacen cuentas con él" }
+      ],
+      "correcta": "b",
+      "pista": "¿Tendría sentido sumar dos teléfonos?",
+      "explicacion": "Aunque tenga dígitos, nunca vas a sumar teléfonos. Además, como número se perderían el 0 del principio y los guiones. Va como **texto**."
+    }
+  ]
+}

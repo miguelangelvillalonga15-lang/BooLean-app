@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "niveles": [
+    { "id": "inicial", "titulo": "Inicial" },
+    { "id": "intermedio", "titulo": "Intermedio" },
+    { "id": "avanzado", "titulo": "Avanzado" },
+    { "id": "pro", "titulo": "Pro" }
+  ],
+  "unidades": [
+    {
+      "id": "u1",
+      "nivel": "inicial",
+      "titulo": "¿Qué es un dato?",
+      "descripcion": "Los ladrillos de todo análisis.",
+      "lecciones": ["u1-l1", "u1-l2", "u1-l3", "u1-l4"],
+      "desafio": null
+    }
+  ]
+}

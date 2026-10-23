@@ -1,0 +1,116 @@
+{
+  "id": "u1-l3",
+  "unidad": "u1",
+  "titulo": "Verdadero o falso: el dato booleano",
+  "minutos": 6,
+  "xp": 15,
+  "pasos": [
+    {
+      "tipo": "concepto",
+      "id": "c1",
+      "boo": "presentandose",
+      "titulo": "¡Hola! Soy Boo 🐾",
+      "texto": "Soy una gata analista y te voy a acompañar en todo el camino. Mi nombre viene de **booleano**: un tipo de dato que solo puede ser **verdadero** o **falso**. Sí, soy medio nerd."
+    },
+    {
+      "tipo": "concepto",
+      "id": "c2",
+      "boo": "contenta",
+      "titulo": "Sí o no, sin grises",
+      "texto": "Un booleano responde preguntas de sí o no: ¿ganó?, ¿está en oferta?, ¿ya la viste?\n\nEn Excel en español aparece como **VERDADERO** o **FALSO**. En inglés y en programación, como **TRUE** o **FALSE**. Se llama así por George Boole, un matemático del siglo XIX."
+    },
+    {
+      "tipo": "ejemplo",
+      "id": "e1",
+      "titulo": "Booleanos en una tabla",
+      "texto": "La columna **¿Ganó?** es booleana: cada celda solo puede decir VERDADERO o FALSO.",
+      "tabla": {
+        "columnas": ["Equipo", "Goles", "¿Ganó?"],
+        "filas": [
+          ["Los Pibes FC", "3", "VERDADERO"],
+          ["Deportivo Mate", "1", "FALSO"]
+        ]
+      }
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p1",
+      "consigna": "¿Cuál de estos datos es booleano?",
+      "opciones": [
+        { "id": "a", "texto": "\"Muzzarella\"" },
+        { "id": "b", "texto": "10" },
+        { "id": "c", "texto": "VERDADERO" },
+        { "id": "d", "texto": "18/12/2022" }
+      ],
+      "correcta": "c",
+      "pista": "Pensá: ¿cuál solo puede tener dos valores posibles?",
+      "explicacion": "VERDADERO es **booleano**. \"Muzzarella\" es texto, 10 es número y 18/12/2022 es fecha."
+    },
+    {
+      "tipo": "completar",
+      "id": "p2",
+      "consigna": "Completá la frase:",
+      "texto": "Un dato booleano solo puede valer verdadero o ___.",
+      "respuestas": ["falso"],
+      "banco": ["cero", "falso", "vacío", "texto"],
+      "pista": "Es lo opuesto a verdadero.",
+      "explicacion": "Los dos únicos valores de un booleano son **verdadero** y **falso**."
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p3",
+      "consigna": "¿Cuál de estas preguntas se responde con un booleano?",
+      "opciones": [
+        { "id": "a", "texto": "¿Cuántos capítulos tiene la serie?" },
+        { "id": "b", "texto": "¿Ya viste el último capítulo?" },
+        { "id": "c", "texto": "¿Cómo se llama la protagonista?" },
+        { "id": "d", "texto": "¿Cuándo se estrenó?" }
+      ],
+      "correcta": "b",
+      "explicacion": "\"¿Ya lo viste?\" se responde con sí o no: es un **booleano**. Las otras piden un número, un texto y una fecha."
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p4",
+      "consigna": "¿Qué tipo de dato es la columna \"¿En vivo?\"",
+      "tabla": {
+        "columnas": ["Canción", "Duración (seg)", "¿En vivo?"],
+        "filas": [
+          ["Ruta del Sol", "245", "FALSO"],
+          ["Noche de Bondi", "312", "VERDADERO"],
+          ["Mate Amargo", "198", "FALSO"]
+        ]
+      },
+      "opciones": [
+        { "id": "a", "texto": "Número" },
+        { "id": "b", "texto": "Texto" },
+        { "id": "c", "texto": "Fecha" },
+        { "id": "d", "texto": "Booleano" }
+      ],
+      "correcta": "d",
+      "explicacion": "Todas sus celdas son VERDADERO o FALSO, así que la columna es **booleana**."
+    },
+    {
+      "tipo": "ordenar",
+      "id": "p5",
+      "consigna": "Ordená de menor a mayor según cuántos valores distintos puede tener cada dato:",
+      "items": [
+        { "id": "num", "texto": "Número entero" },
+        { "id": "bool", "texto": "Booleano" },
+        { "id": "mes", "texto": "Mes del año" }
+      ],
+      "ordenCorrecto": ["bool", "mes", "num"],
+      "pista": "El booleano tiene solo 2 valores posibles.",
+      "explicacion": "Booleano: 2 valores · Mes del año: 12 · Número entero: infinitos."
+    },
+    {
+      "tipo": "completar",
+      "id": "p6",
+      "consigna": "Escribí la palabra que falta:",
+      "texto": "En inglés, VERDADERO se dice ___.",
+      "respuestas": ["true"],
+      "pista": "Empieza con T y tiene 4 letras.",
+      "explicacion": "VERDADERO es **TRUE** y FALSO es **FALSE**. Los vas a ver mucho en SQL y en programación."
+    }
+  ]
+}

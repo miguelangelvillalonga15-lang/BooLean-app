@@ -1,0 +1,118 @@
+{
+  "id": "u1-l4",
+  "unidad": "u1",
+  "titulo": "Datos sucios: vacíos, repetidos y mal escritos",
+  "minutos": 6,
+  "xp": 15,
+  "pasos": [
+    {
+      "tipo": "concepto",
+      "id": "c1",
+      "boo": "pensando",
+      "titulo": "No todos los datos vienen limpios",
+      "texto": "En la vida real, los datos llegan con errores. Antes de analizar, un analista los **limpia**. Es una de las tareas que más tiempo lleva en el trabajo con datos, ¡y una de las más importantes!"
+    },
+    {
+      "tipo": "concepto",
+      "id": "c2",
+      "boo": "pensando",
+      "titulo": "Tres problemas típicos",
+      "texto": "**Vacíos**: falta un dato (una celda en blanco).\n\n**Repetidos**: el mismo registro aparece más de una vez.\n\n**Mal escritos**: el mismo valor escrito de distintas formas (\"Bs As\", \"Buenos Aires\", \"bs. as.\")."
+    },
+    {
+      "tipo": "ejemplo",
+      "id": "e1",
+      "titulo": "La planilla de mascotas",
+      "texto": "A Sienna le falta la edad (**vacío**), Roma aparece dos veces (**repetido**) y \"perro\" está escrito de dos formas distintas (**mal escrito**).",
+      "tabla": {
+        "columnas": ["Nombre", "Especie", "Edad"],
+        "filas": [
+          ["Roma", "Perro", "5"],
+          ["Sienna", "perro", ""],
+          ["Roma", "Perro", "5"],
+          ["Boo", "Gata", "3"]
+        ]
+      }
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p1",
+      "consigna": "¿Qué problema tiene la fila de Juan?",
+      "tabla": {
+        "columnas": ["Cliente", "Plato", "Precio"],
+        "filas": [
+          ["Flor", "Pizza", "9000"],
+          ["Juan", "Sushi", ""],
+          ["Caro", "Ñoquis", "7500"]
+        ]
+      },
+      "opciones": [
+        { "id": "a", "texto": "Tiene un valor vacío" },
+        { "id": "b", "texto": "Está repetida" },
+        { "id": "c", "texto": "Tiene un dato mal escrito" },
+        { "id": "d", "texto": "No tiene ningún problema" }
+      ],
+      "correcta": "a",
+      "pista": "Fijate en la columna Precio.",
+      "explicacion": "Al pedido de Juan le falta el precio: es un **valor vacío**."
+    },
+    {
+      "tipo": "completar",
+      "id": "p2",
+      "consigna": "Completá la frase:",
+      "texto": "Si el mismo pedido aparece dos veces, es un dato ___.",
+      "respuestas": ["repetido", "duplicado"],
+      "banco": ["vacío", "repetido", "booleano", "limpio"],
+      "explicacion": "Un registro que aparece más de una vez está **repetido** (o duplicado)."
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p3",
+      "consigna": "En la columna Ciudad aparecen \"CABA\", \"Capital Federal\" y \"caba\". ¿Qué problema es?",
+      "opciones": [
+        { "id": "a", "texto": "Valores vacíos" },
+        { "id": "b", "texto": "Registros repetidos" },
+        { "id": "c", "texto": "Valores mal escritos o inconsistentes" }
+      ],
+      "correcta": "c",
+      "explicacion": "Es la misma ciudad escrita de tres formas. Hay que **unificarla** para que cuente como un solo valor."
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p4",
+      "consigna": "¿Por qué los registros repetidos son un problema?",
+      "opciones": [
+        { "id": "a", "texto": "Hacen que las cuentas den de más, por ejemplo ventas infladas" },
+        { "id": "b", "texto": "Cambian los colores de la planilla" },
+        { "id": "c", "texto": "No son un problema" }
+      ],
+      "correcta": "a",
+      "pista": "¿Qué pasa si sumás dos veces el mismo pedido?",
+      "explicacion": "Si un pedido está dos veces, al sumar las ventas lo contás **doble** y el resultado da de más."
+    },
+    {
+      "tipo": "ordenar",
+      "id": "p5",
+      "consigna": "Ordená los pasos para trabajar con una tabla nueva:",
+      "items": [
+        { "id": "analizar", "texto": "Analizar los datos" },
+        { "id": "revisar", "texto": "Revisar la tabla y detectar problemas" },
+        { "id": "corregir", "texto": "Corregir o completar los datos" }
+      ],
+      "ordenCorrecto": ["revisar", "corregir", "analizar"],
+      "explicacion": "Primero **revisás**, después **limpiás** y recién ahí **analizás**. Si analizás datos sucios, las conclusiones pueden estar mal."
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p6",
+      "consigna": "En la columna Edad, una celda dice \"tres\" y las demás tienen números. ¿Qué conviene hacer?",
+      "opciones": [
+        { "id": "a", "texto": "Cambiarlo por 3 para que todas sean números" },
+        { "id": "b", "texto": "Dejarlo así, se entiende igual" },
+        { "id": "c", "texto": "Borrar toda la fila" }
+      ],
+      "correcta": "a",
+      "explicacion": "Una columna tiene que tener un solo tipo de dato. Si dejás \"tres\" como texto, no vas a poder calcular el promedio de edad."
+    }
+  ]
+}

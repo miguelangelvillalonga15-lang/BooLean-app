@@ -1,0 +1,16 @@
+[
+  { "termino": "Dato", "definicion": "Una pieza de información que se puede anotar y guardar.", "ejemplo": "El resultado de un partido: 2 a 1.", "leccion": "u1-l1" },
+  { "termino": "Número", "definicion": "Tipo de dato que se puede contar o medir, y con el que se pueden hacer cuentas.", "ejemplo": "Precio de una pizza: 9000.", "leccion": "u1-l1" },
+  { "termino": "Texto", "definicion": "Tipo de dato formado por letras, palabras o símbolos.", "ejemplo": "Nombre de una banda: \"Soda Stereo\".", "leccion": "u1-l1" },
+  { "termino": "Fecha", "definicion": "Tipo de dato que indica un día del calendario.", "ejemplo": "Estreno de una serie: 30/04/2025.", "leccion": "u1-l1" },
+  { "termino": "Tabla", "definicion": "Forma de ordenar datos en filas y columnas.", "ejemplo": "Una planilla de Excel con tus series favoritas.", "leccion": "u1-l2" },
+  { "termino": "Fila", "definicion": "Un registro completo de la tabla. Va de izquierda a derecha.", "ejemplo": "Todos los datos de una canción: nombre, artista y duración.", "leccion": "u1-l2" },
+  { "termino": "Columna", "definicion": "Una característica que tienen todos los registros. Va de arriba hacia abajo y tiene un nombre.", "ejemplo": "La columna \"Duración\" de una lista de canciones.", "leccion": "u1-l2" },
+  { "termino": "Celda", "definicion": "El cruce entre una fila y una columna. Guarda un solo dato.", "ejemplo": "Los goles de un jugador en particular.", "leccion": "u1-l2" },
+  { "termino": "Encabezado", "definicion": "La primera fila de una tabla, con los nombres de las columnas. No es un dato.", "ejemplo": "\"Jugador | Club | Goles\".", "leccion": "u1-l2" },
+  { "termino": "Booleano", "definicion": "Tipo de dato que solo puede valer verdadero o falso (TRUE o FALSE).", "ejemplo": "¿Ganó el partido? VERDADERO.", "leccion": "u1-l3" },
+  { "termino": "Dato sucio", "definicion": "Un dato con errores que hay que corregir antes de analizar.", "ejemplo": "\"pizza\", \"Pizza\" y \"PIZZA \" en la misma columna.", "leccion": "u1-l4" },
+  { "termino": "Valor vacío", "definicion": "Una celda donde falta el dato. También se lo llama nulo.", "ejemplo": "Un pedido sin precio cargado.", "leccion": "u1-l4" },
+  { "termino": "Duplicado", "definicion": "Un registro que aparece más de una vez en la tabla.", "ejemplo": "El mismo pedido cargado dos veces.", "leccion": "u1-l4" },
+  { "termino": "Limpieza de datos", "definicion": "Detectar y corregir vacíos, duplicados y errores antes de analizar.", "ejemplo": "Unificar \"CABA\" y \"Capital Federal\" en un solo valor.", "leccion": "u1-l4" }
+]

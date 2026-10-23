@@ -1,0 +1,128 @@
+{
+  "id": "u1-l2",
+  "unidad": "u1",
+  "titulo": "Filas, columnas y tablas",
+  "minutos": 6,
+  "xp": 15,
+  "pasos": [
+    {
+      "tipo": "concepto",
+      "id": "c1",
+      "boo": "feliz",
+      "titulo": "Datos ordenados: la tabla",
+      "texto": "Cuando tenés muchos datos, lo mejor es ordenarlos en una **tabla**, como en una planilla de Excel. Así es mucho más fácil leerlos y analizarlos."
+    },
+    {
+      "tipo": "concepto",
+      "id": "c2",
+      "boo": "contenta",
+      "titulo": "Las partes de una tabla",
+      "texto": "**Fila**: va de izquierda a derecha y es un registro completo (una serie, un jugador, una canción).\n\n**Columna**: va de arriba hacia abajo y es una característica de todos los registros (temporadas, goles, duración).\n\n**Celda**: el cruce de una fila y una columna. Guarda un solo dato.\n\n**Encabezado**: la primera fila, con los nombres de las columnas."
+    },
+    {
+      "tipo": "ejemplo",
+      "id": "e1",
+      "titulo": "Series para maratonear",
+      "texto": "Esta tabla tiene **3 filas** (una por serie) y **3 columnas**. El encabezado (Serie, Temporadas, Género) no cuenta como fila de datos.",
+      "tabla": {
+        "columnas": ["Serie", "Temporadas", "Género"],
+        "filas": [
+          ["Los Detectives del Barrio", "3", "Policial"],
+          ["Cocina en Llamas", "5", "Reality"],
+          ["Galaxia Sur", "2", "Ciencia ficción"]
+        ]
+      }
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p1",
+      "consigna": "¿Cuántas filas de datos tiene esta tabla?",
+      "tabla": {
+        "columnas": ["Jugador", "Equipo", "Goles"],
+        "filas": [
+          ["Mati", "Los Pibes FC", "7"],
+          ["Lucho", "Deportivo Mate", "4"],
+          ["Sofi", "Los Pibes FC", "9"],
+          ["Nacho", "Atlético Fernet", "2"]
+        ]
+      },
+      "opciones": [
+        { "id": "a", "texto": "3" },
+        { "id": "b", "texto": "4" },
+        { "id": "c", "texto": "5" }
+      ],
+      "correcta": "b",
+      "pista": "El encabezado no cuenta.",
+      "explicacion": "Hay **4 filas** de datos, una por jugador. La fila de arriba es el encabezado."
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p2",
+      "consigna": "En la tabla de jugadores, ¿qué dato hay en la celda de la fila de Sofi y la columna Goles?",
+      "tabla": {
+        "columnas": ["Jugador", "Equipo", "Goles"],
+        "filas": [
+          ["Mati", "Los Pibes FC", "7"],
+          ["Lucho", "Deportivo Mate", "4"],
+          ["Sofi", "Los Pibes FC", "9"],
+          ["Nacho", "Atlético Fernet", "2"]
+        ]
+      },
+      "opciones": [
+        { "id": "a", "texto": "7" },
+        { "id": "b", "texto": "Los Pibes FC" },
+        { "id": "c", "texto": "9" },
+        { "id": "d", "texto": "2" }
+      ],
+      "correcta": "c",
+      "pista": "Buscá la fila de Sofi y bajá desde la columna Goles.",
+      "explicacion": "Donde se cruzan la fila de Sofi y la columna Goles está el **9**."
+    },
+    {
+      "tipo": "completar",
+      "id": "p3",
+      "consigna": "Completá la frase:",
+      "texto": "Cada ___ representa un registro completo, por ejemplo un jugador.",
+      "respuestas": ["fila"],
+      "banco": ["columna", "fila", "celda", "tabla"],
+      "explicacion": "Una **fila** junta todos los datos de un mismo registro."
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p4",
+      "consigna": "En una tabla, ¿qué es una columna?",
+      "opciones": [
+        { "id": "a", "texto": "Un registro completo, como una canción" },
+        { "id": "b", "texto": "Una característica de todos los registros, como la duración" },
+        { "id": "c", "texto": "El título de la planilla" }
+      ],
+      "correcta": "b",
+      "explicacion": "Una **columna** guarda la misma característica para todos los registros. Por eso todos sus valores suelen ser del mismo tipo."
+    },
+    {
+      "tipo": "ordenar",
+      "id": "p5",
+      "consigna": "Ordená de lo más chico a lo más grande:",
+      "items": [
+        { "id": "tabla", "texto": "Tabla" },
+        { "id": "celda", "texto": "Celda" },
+        { "id": "fila", "texto": "Fila" }
+      ],
+      "ordenCorrecto": ["celda", "fila", "tabla"],
+      "pista": "¿Qué parte guarda un solo dato?",
+      "explicacion": "Una **celda** guarda un dato, una **fila** tiene varias celdas y una **tabla** tiene varias filas."
+    },
+    {
+      "tipo": "opcion_multiple",
+      "id": "p6",
+      "consigna": "¿Cuál es el mejor nombre para una columna que guarda la duración de cada canción?",
+      "opciones": [
+        { "id": "a", "texto": "Duración (segundos)" },
+        { "id": "b", "texto": "Canción 1" },
+        { "id": "c", "texto": "Datos varios" }
+      ],
+      "correcta": "a",
+      "explicacion": "Un buen encabezado dice **qué** guarda la columna y, si hace falta, **en qué unidad**."
+    }
+  ]
+}
