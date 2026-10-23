@@ -12,10 +12,10 @@ export function TarjetaConcepto({ paso }: { paso: PasoConcepto | PasoEjemplo }) 
   const esEjemplo = paso.tipo === 'ejemplo';
   return (
     <View style={estilos.contenedor}>
-      <Texto variante="etiqueta" color={esEjemplo ? colores.racha : colores.primario}>
+      <Texto variante="etiqueta" color={esEjemplo ? colores.racha : colores.violeta}>
         {esEjemplo ? 'Ejemplo' : 'Concepto nuevo'}
       </Texto>
-      {paso.tipo === 'concepto' ? <Boo animo={paso.boo ?? 'feliz'} tamano={56} /> : null}
+      {paso.tipo === 'concepto' ? <Boo animo={paso.boo ?? 'feliz'} tamano={80} /> : null}
       <Texto variante="titulo">{paso.titulo}</Texto>
       {paso.tipo === 'ejemplo' && paso.tabla ? <TablaDatos tabla={paso.tabla} /> : null}
       <View style={estilos.cuerpo}>
@@ -31,7 +31,9 @@ const estilos = StyleSheet.create({
   contenedor: { gap: espacio.m },
   cuerpo: {
     gap: espacio.m,
-    backgroundColor: colores.fondoSuave,
+    backgroundColor: colores.superficie,
+    borderWidth: 1,
+    borderColor: colores.borde,
     borderRadius: radio.m,
     padding: espacio.m,
   },

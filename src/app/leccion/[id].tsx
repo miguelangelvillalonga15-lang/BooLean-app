@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -69,9 +70,7 @@ function Sesion({ leccion }: { leccion: Leccion }) {
           accessibilityLabel="Salir de la lección"
           hitSlop={12}
           onPress={() => router.back()}>
-          <Texto variante="subtitulo" color={colores.textoSuave}>
-            ✕
-          </Texto>
+          <Ionicons name="close" size={28} color={colores.textoSuave} />
         </Pressable>
         <BarraProgreso valor={avance(estado)} />
       </View>
@@ -132,7 +131,7 @@ function PasoEjercicio({ ejercicio, repaso, estado, onResponder, onPista, onCont
   return (
     <View style={estilos.cuerpo}>
       <View style={estilos.contenido}>
-        <Texto variante="etiqueta" color={repaso ? colores.racha : colores.primario}>
+        <Texto variante="etiqueta" color={repaso ? colores.racha : colores.violeta}>
           {repaso ? '🔁 Repaso: esto te costó' : 'Práctica'}
         </Texto>
         <Texto variante="subtitulo">{ejercicio.consigna}</Texto>
@@ -163,7 +162,7 @@ function PasoEjercicio({ ejercicio, repaso, estado, onResponder, onPista, onCont
 
         {ejercicio.pista && !enFeedback ? (
           pistaUsada ? (
-            <Boo animo="pensando" tamano={40} mensaje={`${elegirPista(ejercicio.id)} ${ejercicio.pista}`} />
+            <Boo animo="pensando" tamano={48} mensaje={`${elegirPista(ejercicio.id)} ${ejercicio.pista}`} />
           ) : (
             <Boton
               titulo={`💡 Pista de Boo (−${XP_COSTO_PISTA} XP)`}

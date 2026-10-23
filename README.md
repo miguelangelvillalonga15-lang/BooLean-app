@@ -7,8 +7,8 @@ Lecciones de hasta 10 minutos: **concepto → práctica → repaso de lo que te 
 ## Qué tiene esta versión (MVP)
 
 - Bienvenida con Boo: tu nombre y tu meta diaria (5, 10 o 15 minutos).
-- Inicio con racha diaria 🔥, XP ⭐ y barra de meta del día.
-- Mapa de lecciones que se desbloquean en orden.
+- Inicio con racha diaria 🔥, XP ⭐, avance de la unidad y meta del día.
+- Pestaña «Aprender» con el camino de lecciones, que se desbloquean en orden.
 - Lecciones con ejercicios de opción múltiple, completar y ordenar, con corrección automática.
 - Pistas de Boo (cuestan 2 XP) y repaso al final de los ejercicios que fallaste.
 - Vibración al acertar o errar.
@@ -17,6 +17,10 @@ Lecciones de hasta 10 minutos: **concepto → práctica → repaso de lo que te 
 - Unidad 1 «¿Qué es un dato?» con 4 lecciones.
 
 Todo funciona sin internet: el contenido está en archivos JSON y el progreso se guarda en el celular.
+
+## Boo
+
+Boo está dibujada en SVG (`src/components/Boo.tsx`) a partir de la gata real: pelo largo blanco y negro, capucha negra con una mancha alrededor del ojo, ojos verdes y nariz rosa. Tiene siete ánimos: `feliz`, `contenta`, `presentandose`, `pensando`, `triste`, `decepcionada` y `sorprendida`. El ícono de la app también es Boo.
 
 ## Cómo probarla en tu celular
 
@@ -51,11 +55,13 @@ Mientras `npm start` esté corriendo, cada cambio que hagas en el código se ve 
 ```
 src/
 ├── app/                  Pantallas (cada archivo es una pantalla)
-│   ├── index.tsx         Inicio: racha, XP, meta y mapa de lecciones
+│   ├── (tabs)/           Pestañas de abajo
+│   │   ├── index.tsx     Inicio: racha, XP, unidad actual y meta del día
+│   │   ├── aprender.tsx  Mapa de lecciones
+│   │   └── glosario.tsx  Glosario
 │   ├── bienvenida.tsx    Primera vez: Boo se presenta
 │   ├── leccion/[id].tsx  Lección: conceptos, ejercicios y repaso
-│   ├── resultado.tsx     Resultado de la lección
-│   └── glosario.tsx      Glosario
+│   └── resultado.tsx     Resultado de la lección
 ├── content/              Contenido del curso (JSON)
 │   ├── curso.json        Niveles, unidades y orden de lecciones
 │   ├── boo.json          Frases de Boo
@@ -64,7 +70,7 @@ src/
 │   └── index.ts          Registro de lecciones
 ├── engine/               Lógica pura (corrección, racha, sesión, progreso)
 ├── store/progress.ts     Progreso guardado en el celular
-├── components/           Piezas visuales (Boo, ejercicios, botones, tablas)
+├── components/           Piezas visuales (Boo, ejercicios, botones, tarjetas, tablas)
 ├── theme/                Colores y medidas
 └── types/content.ts      Formato del contenido
 __tests__/                Tests
@@ -94,9 +100,7 @@ Todos los ejercicios llevan `consigna` y `explicacion`, y pueden llevar `pista` 
 - [ ] Vidas (corazones)
 - [ ] Logros y medallas
 - [ ] Recordatorio diario («Boo te extraña 😿»)
-- [ ] Modo oscuro
 - [ ] Sección «Repasar» con los ejercicios que costaron (ya se guardan en `paraRepasar`)
-- [ ] Ilustraciones de Boo (hoy es un emoji provisorio)
 - [ ] Unidad 2: Excel desde cero
 - [ ] Desafío por nivel y ejercicios de cálculo numérico
 - [ ] Ejercicios de SQL corridos en la app con SQLite

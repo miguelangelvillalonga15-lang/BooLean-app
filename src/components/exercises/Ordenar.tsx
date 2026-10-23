@@ -39,7 +39,7 @@ export function Ordenar({ ejercicio, respuesta, onCambiar, bloqueado }: Props) {
         ) : (
           respuesta.map((id, i) => (
             <View key={id} style={estilos.filaElegida}>
-              <Texto variante="etiqueta" color={colores.primario} style={estilos.numero}>
+              <Texto variante="etiqueta" color={colores.violeta} style={estilos.numero}>
                 {i + 1}
               </Texto>
               <View style={{ flex: 1 }}>
@@ -83,7 +83,7 @@ const estilos = StyleSheet.create({
   zona: {
     minHeight: 120,
     gap: espacio.s,
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderStyle: 'dashed',
     borderColor: colores.borde,
     borderRadius: radio.m,

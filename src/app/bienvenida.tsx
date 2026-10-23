@@ -10,7 +10,7 @@ import { Texto } from '@/components/ui/Texto';
 import { META_XP, type MetaMinutos } from '@/engine/progreso';
 import { vibrar } from '@/lib/haptics';
 import { useProgreso } from '@/store/progress';
-import { colores, espacio, radio } from '@/theme';
+import { colores, espacio, fuentes, radio } from '@/theme';
 
 const METAS: { minutos: MetaMinutos; nombre: string }[] = [
   { minutos: 5, nombre: 'Tranqui' },
@@ -35,7 +35,7 @@ export default function Bienvenida() {
     return (
       <Pantalla pie={<Boton titulo="¡Arranquemos!" onPress={() => setPaso(1)} />}>
         <View style={estilos.centro}>
-          <Boo animo="presentandose" tamano={96} />
+          <Boo animo="presentandose" tamano={150} />
           <Texto variante="titulo" style={estilos.textoCentrado}>
             ¡Hola! Soy Boo
           </Texto>
@@ -58,7 +58,7 @@ export default function Bienvenida() {
             onPress={() => setPaso(2)}
           />
         }>
-        <Boo animo="contenta" mensaje="¿Cómo te llamo?" />
+        <Boo animo="contenta" tamano={72} mensaje="¿Cómo te llamo?" />
         <TextInput
           value={nombre}
           onChangeText={setNombre}
@@ -79,6 +79,7 @@ export default function Bienvenida() {
     <Pantalla pie={<Boton titulo="Empezar a aprender" onPress={terminar} />}>
       <Boo
         animo="feliz"
+        tamano={72}
         mensaje={`¡Un gusto, ${nombre.trim()}! ¿Cuánto tiempo por día querés practicar?`}
       />
       <View style={{ gap: espacio.s }}>
@@ -105,12 +106,14 @@ const estilos = StyleSheet.create({
   centro: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: espacio.m },
   textoCentrado: { textAlign: 'center' },
   input: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: colores.borde,
     borderRadius: radio.m,
     paddingHorizontal: espacio.m,
     paddingVertical: espacio.m,
     fontSize: 18,
+    fontFamily: fuentes.media,
     color: colores.texto,
+    backgroundColor: colores.superficie,
   },
 });

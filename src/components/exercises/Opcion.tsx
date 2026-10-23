@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 
-import { colores, espacio, radio } from '@/theme';
+import { colores, espacio, fuentes, radio } from '@/theme';
 
 import { Texto } from '../ui/Texto';
 
@@ -29,7 +29,7 @@ export function Opcion({ texto, seleccionada, deshabilitada, onPress, compacta }
       ]}>
       <Texto
         variante={compacta ? 'chico' : 'cuerpo'}
-        color={seleccionada ? colores.primarioOscuro : colores.texto}
+        color={colores.texto}
         style={compacta && estilos.textoCompacto}>
         {texto}
       </Texto>
@@ -39,23 +39,22 @@ export function Opcion({ texto, seleccionada, deshabilitada, onPress, compacta }
 
 const estilos = StyleSheet.create({
   base: {
-    borderWidth: 2,
-    borderBottomWidth: 4,
+    borderWidth: 1.5,
     borderColor: colores.borde,
     borderRadius: radio.m,
     paddingVertical: espacio.m,
     paddingHorizontal: espacio.m,
-    backgroundColor: colores.fondo,
+    backgroundColor: colores.superficie,
   },
   compacta: {
     paddingVertical: espacio.s,
     paddingHorizontal: espacio.m,
   },
-  textoCompacto: { fontSize: 16, fontWeight: '600' },
+  textoCompacto: { fontSize: 16, fontFamily: fuentes.media },
   seleccionada: {
-    borderColor: colores.primario,
-    backgroundColor: colores.primarioSuave,
+    borderColor: colores.violeta,
+    backgroundColor: colores.violetaSuave,
   },
   deshabilitada: { opacity: 0.4 },
-  presionada: { transform: [{ translateY: 2 }] },
+  presionada: { transform: [{ scale: 0.98 }] },
 });

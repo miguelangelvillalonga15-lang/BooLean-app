@@ -5,7 +5,7 @@ import { colores, radio } from '@/theme';
 type Props = { valor: number; color?: string; alto?: number };
 
 /** Barra horizontal; `valor` va de 0 a 1. */
-export function BarraProgreso({ valor, color = colores.acierto, alto = 14 }: Props) {
+export function BarraProgreso({ valor, color = colores.primario, alto = 12 }: Props) {
   const porcentaje = Math.min(1, Math.max(0, valor)) * 100;
   return (
     <View
@@ -21,7 +21,7 @@ const estilos = StyleSheet.create({
   fondo: {
     flexGrow: 1,
     alignSelf: 'stretch',
-    backgroundColor: colores.borde,
+    backgroundColor: colores.superficieAlta,
     borderRadius: radio.redondo,
     overflow: 'hidden',
   },

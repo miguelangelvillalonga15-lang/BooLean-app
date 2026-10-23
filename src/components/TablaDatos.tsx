@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 import type { Tabla } from '@/types/content';
-import { colores, espacio, radio } from '@/theme';
+import { colores, espacio, fuentes, radio } from '@/theme';
 
 import { Texto } from './ui/Texto';
 
@@ -13,7 +13,7 @@ export function TablaDatos({ tabla }: { tabla: Tabla }) {
         <View style={[estilos.fila, estilos.encabezado]}>
           {tabla.columnas.map((col, i) => (
             <View key={i} style={estilos.celda}>
-              <Texto variante="chico" style={estilos.negrita} color={colores.primarioOscuro}>
+              <Texto variante="chico" style={estilos.negrita} color={colores.primario}>
                 {col}
               </Texto>
             </View>
@@ -41,14 +41,15 @@ export function TablaDatos({ tabla }: { tabla: Tabla }) {
 
 const estilos = StyleSheet.create({
   tabla: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: colores.borde,
     borderRadius: radio.s,
+    backgroundColor: colores.fondo,
     overflow: 'hidden',
   },
   fila: { flexDirection: 'row' },
-  encabezado: { backgroundColor: colores.primarioSuave },
-  filaPar: { backgroundColor: colores.fondoSuave },
+  encabezado: { backgroundColor: colores.superficieAlta },
+  filaPar: { backgroundColor: colores.superficie },
   celda: {
     minWidth: 96,
     maxWidth: 180,
@@ -57,6 +58,6 @@ const estilos = StyleSheet.create({
     borderRightWidth: 1,
     borderColor: colores.borde,
   },
-  negrita: { fontWeight: '800' },
-  vacio: { fontStyle: 'italic' },
+  negrita: { fontFamily: fuentes.negrita },
+  vacio: { fontFamily: fuentes.media },
 });

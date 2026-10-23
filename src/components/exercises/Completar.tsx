@@ -4,7 +4,7 @@ import { StyleSheet, TextInput, View } from 'react-native';
 import type { EjercicioCompletar } from '@/types/content';
 import { vibrar } from '@/lib/haptics';
 import { mezclar } from '@/lib/random';
-import { colores, espacio, radio } from '@/theme';
+import { colores, espacio, fuentes, radio } from '@/theme';
 
 import { Texto } from '../ui/Texto';
 import { Opcion } from './Opcion';
@@ -30,7 +30,7 @@ export function Completar({ ejercicio, respuesta, onCambiar, bloqueado }: Props)
           {antes}
           <Texto
             variante="subtitulo"
-            color={respuesta ? colores.primario : colores.bloqueado}
+            color={respuesta ? colores.violeta : colores.textoSuave}
             style={estilos.hueco}>
             {banco ? (respuesta ?? '______') : '______'}
           </Texto>
@@ -73,21 +73,24 @@ export function Completar({ ejercicio, respuesta, onCambiar, bloqueado }: Props)
 
 const estilos = StyleSheet.create({
   frase: {
-    backgroundColor: colores.fondoSuave,
+    backgroundColor: colores.superficie,
+    borderWidth: 1,
+    borderColor: colores.borde,
     borderRadius: radio.m,
     padding: espacio.m,
   },
-  textoFrase: { fontWeight: '600' },
-  hueco: { fontWeight: '800', textDecorationLine: 'underline' },
+  textoFrase: { fontFamily: fuentes.media },
+  hueco: { fontFamily: fuentes.negrita, textDecorationLine: 'underline' },
   banco: { flexDirection: 'row', flexWrap: 'wrap', gap: espacio.s },
   input: {
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: colores.borde,
     borderRadius: radio.m,
     paddingHorizontal: espacio.m,
     paddingVertical: espacio.m,
     fontSize: 18,
+    fontFamily: fuentes.media,
     color: colores.texto,
-    backgroundColor: colores.fondo,
+    backgroundColor: colores.superficie,
   },
 });

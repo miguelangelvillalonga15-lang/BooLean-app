@@ -1,22 +1,35 @@
-// Colores y medidas de BooLean. Cambiá acá para cambiar el look de toda la app.
+// Colores, tipografía y medidas de BooLean. Cambiá acá para cambiar el look de toda la app.
 
 export const colores = {
-  primario: '#7B4FD6', // violeta Boo
-  primarioOscuro: '#5B34B0',
-  primarioSuave: '#EFE8FC',
-  fondo: '#FFFFFF',
-  fondoSuave: '#F6F4FA',
-  borde: '#E3DEEE',
-  texto: '#231C33',
-  textoSuave: '#6E6880',
-  acierto: '#22A06B',
-  aciertoSuave: '#E3F6EC',
-  error: '#E5484D',
-  errorSuave: '#FDECEC',
-  racha: '#FF8A00',
-  xp: '#F5B800',
-  bloqueado: '#C9C4D6',
+  fondo: '#0A1020',
+  superficie: '#131B2E',
+  superficieAlta: '#1B2540',
+  borde: '#26314D',
+  texto: '#F2F5FB',
+  textoSuave: '#8F9BB8',
+  /** Verde neón: botones principales y aciertos. */
+  primario: '#13E36C',
+  textoSobrePrimario: '#04130A',
+  violeta: '#7B5CFF',
+  violetaOscuro: '#3B23B8',
+  violetaSuave: 'rgba(123, 92, 255, 0.16)',
+  acierto: '#13E36C',
+  aciertoSuave: 'rgba(19, 227, 108, 0.12)',
+  error: '#FF5D73',
+  errorSuave: 'rgba(255, 93, 115, 0.12)',
+  racha: '#FF9F2E',
+  xp: '#FFD23F',
+  azul: '#5AA9FF',
+  bloqueado: '#3A4560',
   blanco: '#FFFFFF',
+} as const;
+
+export const fuentes = {
+  regular: 'Outfit_400Regular',
+  media: 'Outfit_500Medium',
+  seminegrita: 'Outfit_600SemiBold',
+  negrita: 'Outfit_700Bold',
+  extranegrita: 'Outfit_800ExtraBold',
 } as const;
 
 export const espacio = {
@@ -28,9 +41,9 @@ export const espacio = {
 } as const;
 
 export const radio = {
-  s: 8,
-  m: 14,
-  l: 20,
+  s: 10,
+  m: 16,
+  l: 24,
   redondo: 999,
 } as const;
 

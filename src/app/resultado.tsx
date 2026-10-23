@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -33,7 +34,7 @@ export default function Resultado() {
   return (
     <Pantalla pie={<Boton titulo="Continuar" onPress={() => router.back()} />}>
       <View style={estilos.centro}>
-        <Boo animo={nivel === 'regular' ? 'pensando' : 'presentandose'} tamano={96} />
+        <Boo animo={nivel === 'regular' ? 'pensando' : 'presentandose'} tamano={130} />
         <Texto variante="titulo" style={estilos.textoCentrado}>
           ¡Lección completada!
         </Texto>
@@ -42,9 +43,9 @@ export default function Resultado() {
         </Texto>
 
         <View style={estilos.fichas}>
-          <Ficha titulo="XP ganado" valor={`⭐ ${p.xp}`} color={colores.xp} />
-          <Ficha titulo="Aciertos" valor={`🎯 ${aciertos}/${total}`} color={colores.acierto} />
-          <Ficha titulo="Racha" valor={`🔥 ${p.racha}`} color={colores.racha} />
+          <Ficha titulo="XP" icono="star" valor={`${p.xp}`} color={colores.xp} />
+          <Ficha titulo="Aciertos" icono="locate" valor={`${aciertos}/${total}`} color={colores.acierto} />
+          <Ficha titulo="Racha" icono="flame" valor={`${p.racha}`} color={colores.racha} />
         </View>
 
         {p.rachaSubio === '1' ? (
@@ -62,17 +63,25 @@ export default function Resultado() {
   );
 }
 
-function Ficha({ titulo, valor, color }: { titulo: string; valor: string; color: string }) {
+type FichaProps = {
+  titulo: string;
+  icono: keyof typeof Ionicons.glyphMap;
+  valor: string;
+  color: string;
+};
+
+function Ficha({ titulo, icono, valor, color }: FichaProps) {
   return (
     <View style={[estilos.ficha, { borderColor: color }]}>
       <View style={[estilos.fichaTitulo, { backgroundColor: color }]}>
-        <Texto variante="etiqueta" color={colores.blanco} style={estilos.textoCentrado}>
+        <Texto variante="etiqueta" color={colores.textoSobrePrimario} style={estilos.textoCentrado}>
           {titulo}
         </Texto>
       </View>
-      <Texto variante="subtitulo" style={estilos.fichaValor}>
-        {valor}
-      </Texto>
+      <View style={estilos.fichaValor}>
+        <Ionicons name={icono} size={20} color={color} />
+        <Texto variante="numero">{valor}</Texto>
+      </View>
     </View>
   );
 }
@@ -81,7 +90,13 @@ const estilos = StyleSheet.create({
   centro: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: espacio.m },
   textoCentrado: { textAlign: 'center' },
   fichas: { flexDirection: 'row', gap: espacio.s, alignSelf: 'stretch' },
-  ficha: { flex: 1, borderWidth: 2, borderRadius: radio.m, overflow: 'hidden' },
+  ficha: { flex: 1, borderWidth: 2, borderRadius: radio.m, overflow: 'hidden', backgroundColor: colores.superficie },
   fichaTitulo: { paddingVertical: espacio.xs },
-  fichaValor: { textAlign: 'center', paddingVertical: espacio.m },
+  fichaValor: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: espacio.xs,
+    paddingVertical: espacio.m,
+  },
 });
